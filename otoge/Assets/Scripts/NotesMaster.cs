@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class JudgeLine : MonoBehaviour
+public class NotesMaster : MonoBehaviour
 {
     // Start is called before the first frame update
     void Start()
@@ -15,17 +15,4 @@ public class JudgeLine : MonoBehaviour
     {
         
     }
-
-	private void OnTriggerStay(Collider other)
-	{
-		if (other.gameObject.tag == "note")
-		{
-			if(Input.GetKeyDown(KeyCode.Space))
-			{
-				Destroy(other.gameObject);
-			}
-		}
-			
-		
-	}
 }
