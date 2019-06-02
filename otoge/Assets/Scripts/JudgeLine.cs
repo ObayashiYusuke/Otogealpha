@@ -6,7 +6,7 @@ public class JudgeLine : MonoBehaviour
 {
 
 	public int inputBuffer;
-    // Start is called before the first frame update
+    // Start is called before the first frame update home
     void Start()
     {
         
