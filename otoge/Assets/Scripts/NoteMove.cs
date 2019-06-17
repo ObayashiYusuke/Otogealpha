@@ -18,7 +18,7 @@ public class NoteMove : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        this.transform.position += new Vector3(-1 * dx * Time.deltaTime, 0, 0);//等速移動
+        this.transform.position += new Vector3(1 * dx * Time.deltaTime, 0, 0);//等速移動
 
        
     
