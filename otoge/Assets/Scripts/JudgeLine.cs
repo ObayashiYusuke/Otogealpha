@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class JudgeLine : MonoBehaviour
 {
-
+	public NoteMasterRand noteMasterRand;
 	public int inputBuffer;
     // Start is called before the first frame update home
     void Start()
@@ -50,4 +50,11 @@ public class JudgeLine : MonoBehaviour
 			Destroy(other.gameObject);
 		}
 	}
+
+	private void OnTriggerExit(Collider other)
+	{
+		other.gameObject.GetComponent<Renderer>().material.color = new Color(0, 0, 254);
+		noteMasterRand.life -= 1;
+	}
+
 }
