@@ -20,7 +20,7 @@ public class NoteMasterRand : MonoBehaviour
 	{
 		float notekey;
 		int speed = 10;//降ってくる密度　少ないほど早い
-		int count = 10;
+		int count = 8;
 
 		GameObject obj;
 
@@ -88,7 +88,20 @@ public class NoteMasterRand : MonoBehaviour
 				{
 					speed--;
 				}
-				count = 10;
+				if (speed > 7)
+				{
+					count = 8;
+				}
+				else if (speed > 4)
+				{
+					count = 16;
+				}
+				else if (speed > 2)
+				{
+					count = 24;
+				}
+				else
+					count = 100;
 			}
 
 			for (int i = 1; i <= speed; i++) {
