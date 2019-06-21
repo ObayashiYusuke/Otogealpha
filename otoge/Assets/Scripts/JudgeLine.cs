@@ -48,13 +48,17 @@ public class JudgeLine : MonoBehaviour
 		if((inputBuffer & (int)n.noteType) != 0)
 		{
 			Destroy(other.gameObject);
+			noteMasterRand.score += 100;
 		}
 	}
 
 	private void OnTriggerExit(Collider other)
 	{
 		other.gameObject.GetComponent<Renderer>().material.color = new Color(0, 0, 254);
-		noteMasterRand.life -= 1;
+		if (noteMasterRand.life > 0)
+		{
+			noteMasterRand.life -= 1;
+		}
 	}
 
 }

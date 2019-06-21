@@ -1,13 +1,16 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.UI;
 public class NoteMasterRand : MonoBehaviour
 {
 
 	public GameObject Pref;
 
 	public int life = 8;
+	public int score = 0;
+	public Text scoreText;
+	public Text lifeText;
 
 	/* private IEnumerator Test1Coloutine()
 	{
@@ -119,11 +122,13 @@ public class NoteMasterRand : MonoBehaviour
 	void Start()
 	{
 		StartCoroutine(Test2Coroutine());
+		
 	}
 
 	// Update is called once per frame
 	void Update()
 	{
-		
+		scoreText.text = "Score : " + score.ToString();
+		lifeText.text = "Life : " + life.ToString();
 	}
 }
