@@ -7,6 +7,7 @@ using System.Text.RegularExpressions;
 public class NoteMaster : MonoBehaviour
 {
 	public int a = 4;//テスト生成個数
+	public float speed = 10;
 	public GameObject Pref;
 
 	//　読む込むテキストが書き込まれている.txtファイル
@@ -23,6 +24,7 @@ public class NoteMaster : MonoBehaviour
 	private int rowLength;
 
 	private float BPM = 1;
+	private float barTime;
 
 	private IEnumerator Test1Coloutine()
 	{
@@ -33,9 +35,7 @@ public class NoteMaster : MonoBehaviour
 
 	private IEnumerator Test2Coroutine()
 	{
-		Vector3 pos;
-
-		Note n;
+		
 
 
 
@@ -58,8 +58,22 @@ public class NoteMaster : MonoBehaviour
 			BPM = float.Parse(Regex.Replace(splitText[textNum], @"[bpm=]", ""));
 			Debug.Log("BPM IS " + BPM);
 		}
+		barTime = 60 / (BPM / 4);
+		Debug.Log("barTime is" + barTime);
+		for (int i = 1; i <= 5; i++)
+		{
+			Debug.Log(i + "番目の生成");
+			MakeOneBar(i);
+		}
 
+		yield return new WaitForSeconds(barTime);
 
+		while(textNum < rowLength)
+		{
+			MakeOneBar(5);
+			yield return new WaitForSeconds(barTime);
+		}
+		yield return null;
 		/*while (a > 0)
 		{
 			Debug.Log("あと" + a + "個生成");
@@ -78,26 +92,155 @@ public class NoteMaster : MonoBehaviour
 			yield return Test1Coloutine();
 			a--;
 		}過去の遺産*/
-		yield return new WaitForSeconds(1f);
+
 
 	}
 
-	public float GetBPM()
+	public float GetBPM()		//BPMを取得する関数!!!!!!!
 	{
-		while (Regex.IsMatch(splitText[textNum], "bpm") == false)//bpmが出でくるまで行を進める
+		/*while (Regex.IsMatch(splitText[textNum], "bpm") == false)//bpmが出でくるまで行を進める
 		{
 			textNum++;
 			if (textNum >= rowLength)//見つからず最後の行まで行ったら-1を返す
 			{
 				return -1;
 			}
+		}*/
+		if (SearchWord("bpm") == false)
+		{
+			return -1;
 		}
-		if (splitText[textNum].Split('.').Length > 2)
+		if (splitText[textNum].Split('.').Length > 2)//小数点が2個以上ある場合を例外処理
 		{
 			return -1;
 		}
 		return float.Parse(Regex.Replace(splitText[textNum], @"[^0-9.]", ""));//BPMをフロート型にして返す
 
+	}
+
+	public bool MakeOneBar(int skipBar)
+	{
+		Vector3 pos,size;
+		pos.y = 0;
+		size.x = 1;
+		size.y = 1;
+
+		Note n;
+		string lineData;
+		GameObject obj;
+
+		if(SearchWord("--") == false)
+		{
+			return false;
+		}
+		int startline = textNum;
+		Debug.Log("startline is " + startline);
+
+		textNum++;
+
+		if (SearchWord("--") == false)
+		{
+			return false;
+		}
+		Debug.Log("textNum is " + textNum);
+
+		float interval = barTime / (textNum - startline - 1);
+
+		for(int i = 0; (startline + 1 + i ) < textNum; i++)
+		{
+			Debug.Log("小節の中の" + (i + 1) + "行目");
+			lineData = (Regex.Replace(splitText[startline + 1 + i], @"[^0-9A-Z]",""));
+			Debug.Log("lineData is" + lineData);
+			
+			if(lineData[0] != '0')
+			{
+				obj = Instantiate(Pref);
+				pos.x = (7 - (skipBar * barTime * speed) - (i * interval * speed));
+				pos.z = (float)(lineData[0] - '1') / 2 + 0;
+				
+				obj.transform.position = pos;
+				
+				size.z = (float)(lineData[0] - '0') - 0.04f;
+				obj.transform.localScale = size;
+
+				n = obj.GetComponent<Note>();
+				n.noteType = (lineData[0] == '1') ? NoteType.POS_S :
+							(lineData[0] == '2') ? NoteType.POS_S | NoteType.POS_F :
+							(lineData[0] == '3') ? NoteType.POS_S | NoteType.POS_F | NoteType.POS_J :
+							 NoteType.POS_S | NoteType.POS_F | NoteType.POS_J | NoteType.POS_L;
+			}
+			if (lineData[1] != '0')
+			{
+				obj = Instantiate(Pref);
+				pos.x = (7 - (skipBar * barTime * speed) - (i * interval * speed));
+				pos.z = (float)(lineData[1] - '1')/ 2 + 1;
+
+				obj.transform.position = pos;
+
+				size.z = (float)(lineData[1] - '0') - 0.04f;
+				obj.transform.localScale = size;
+
+				n = obj.GetComponent<Note>();
+				n.noteType = (lineData[1] == '1') ? NoteType.POS_F :
+							(lineData[1] == '2') ? NoteType.POS_F | NoteType.POS_J :
+							 NoteType.POS_F | NoteType.POS_J | NoteType.POS_L;
+			}
+			if (lineData[2] != '0')
+			{
+				obj = Instantiate(Pref);
+				pos.x = (7 - (skipBar * barTime * speed) - (i * interval * speed));
+				pos.z = (float)(lineData[2] - '1') / 2 + 2;
+
+				obj.transform.position = pos;
+
+				size.z = (float)(lineData[2] - '0') - 0.04f;
+				obj.transform.localScale = size;
+
+				n = obj.GetComponent<Note>();
+				n.noteType = (lineData[2] == '1') ? NoteType.POS_J :
+							 NoteType.POS_J | NoteType.POS_L;
+			}
+			if (lineData[3] != '0')
+			{
+				obj = Instantiate(Pref);
+				pos.x = (7 - (skipBar * barTime * speed) - (i * interval * speed));
+				pos.z = (float)(lineData[3] - '1') / 2 + 3;
+
+				obj.transform.position = pos;
+
+				size.z = (float)(lineData[3] - '0') - 0.04f;
+				obj.transform.localScale = size;
+
+				n = obj.GetComponent<Note>();
+				n.noteType = NoteType.POS_L;
+			}
+
+
+		}
+
+		return true;
+
+
+	}
+
+	public bool SearchWord(string str)
+		/*文字列を検索し、最初のその文字列が見つかるまでtextNumを進める
+		 見つかればtrue,見つからなければfalse*/
+	{
+		if (textNum >= rowLength)//見つからず最後の行まで行ったら失敗
+		{
+			return false;
+		}
+		while (Regex.IsMatch(splitText[textNum], str) == false)
+		{
+			textNum++;
+			if (textNum >= rowLength)//見つからず最後の行まで行ったら失敗
+			{
+				Debug.Log(str + " は見つかりませんでした");
+				return false;
+			}
+		}
+		return true;
 	}
 
 	// Start is called before the first frame update
