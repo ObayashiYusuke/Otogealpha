@@ -69,7 +69,7 @@ public class NoteMasterRand : MonoBehaviour
 
 				notekey -= 0.125f;
 			}
-			if(notekey > 0.6125f)
+			if(notekey > 0.06125f)
 			{
 				obj = Instantiate(Pref);
 				pos.x = -10;
