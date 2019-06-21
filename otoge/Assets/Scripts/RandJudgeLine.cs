@@ -2,22 +2,22 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class JudgeLine : MonoBehaviour
+public class RandJudgeLine : MonoBehaviour
 {
-	public NoteMaster noteMaster;
+	public RandNoteMaster randNoteMaster;
 	public int inputBuffer;
-	// Start is called before the first frame update home
-	void Start()
-	{
-
-	}
+    // Start is called before the first frame update home
+    void Start()
+    {
+        
+    }
 
 	private void FixedUpdate()
 	{
 		inputBuffer = 0;
 		if (Input.GetKeyDown(KeyCode.S))
 		{
-			inputBuffer |= (int)NoteType.POS_S;
+			inputBuffer |= (int)NoteType.POS_S; 
 		}
 
 		if (Input.GetKeyDown(KeyCode.F))
@@ -38,26 +38,26 @@ public class JudgeLine : MonoBehaviour
 
 	// Update is called once per frame
 	void Update()
-	{
-
-	}
+    {
+        
+    }
 
 	private void OnTriggerStay(Collider other)
 	{
 		Note n = other.gameObject.GetComponent<Note>();
-		if ((inputBuffer & (int)n.noteType) != 0)
+		if((inputBuffer & (int)n.noteType) != 0)
 		{
 			Destroy(other.gameObject);
-			noteMaster.score += 100;
+			randNoteMaster.score += 100;
 		}
 	}
 
 	private void OnTriggerExit(Collider other)
 	{
 		other.gameObject.GetComponent<Renderer>().material.color = new Color(0, 0, 254);
-		if (noteMaster.life > 0)
+		if (randNoteMaster.life > 0)
 		{
-			noteMaster.life -= 1;
+			randNoteMaster.life -= 1;
 		}
 	}
 

@@ -6,7 +6,8 @@ using System.Text.RegularExpressions;
 
 public class NoteMaster : MonoBehaviour
 {
-	public int a = 4;//テスト生成個数
+	public int life = 8;
+	public int score = 0;
 	public float speed = 10;
 	public GameObject Pref;
 
@@ -22,6 +23,11 @@ public class NoteMaster : MonoBehaviour
 	//　テキストの現在行番号
 	private int textNum = 0;
 	private int rowLength;
+
+	//スコア表示
+	public Text scoreText;
+	public Text lifeText;
+
 
 	private float BPM = 1;
 	private float barTime;
@@ -255,6 +261,7 @@ public class NoteMaster : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
-    }
+		scoreText.text = "Score : " + score.ToString();
+		lifeText.text = "Life : " + life.ToString();
+	}
 }

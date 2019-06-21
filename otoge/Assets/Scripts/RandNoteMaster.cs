@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-public class NoteMasterRand : MonoBehaviour
+public class RandNoteMaster : MonoBehaviour
 {
 
 	public GameObject Pref;
