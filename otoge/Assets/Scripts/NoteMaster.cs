@@ -47,7 +47,7 @@ public class NoteMaster : MonoBehaviour
 
 		Debug.Log("Test2Coloutine開始");
 
-		fumenAllText = (Resources.Load("Test2", typeof(TextAsset)) as TextAsset).text;//テキストの読み込み
+		fumenAllText = (Resources.Load("Test", typeof(TextAsset)) as TextAsset).text;//テキストの読み込み
 
 		splitText = fumenAllText.Split(char.Parse("\n"));//テキストを改行ごとに分ける
 		rowLength = fumenAllText.Split('\n').Length;
