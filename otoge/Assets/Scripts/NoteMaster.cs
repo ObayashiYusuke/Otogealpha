@@ -30,6 +30,7 @@ public class NoteMaster : MonoBehaviour
 
 
 	private float BPM = 1;
+	private float waittime = 0;	//譜面が曲に対して遅れる時間
 	private float barTime;
 
 	private IEnumerator Test1Coloutine()
@@ -42,8 +43,6 @@ public class NoteMaster : MonoBehaviour
 	private IEnumerator Test2Coroutine()
 	{
 		
-
-
 
 		Debug.Log("Test2Coloutine開始");
 
@@ -66,53 +65,36 @@ public class NoteMaster : MonoBehaviour
 		}
 		barTime = 60 / (BPM / 4);
 		Debug.Log("barTime is" + barTime);
+
+		waittime = GetWaittime();
+		Debug.Log("waittime is " + waittime);
+
 		for (int i = 1; i <= 5; i++)
 		{
-			Debug.Log(i + "番目の生成");
-			MakeOneBar(i);
+			Debug.Log(i + "小節目の生成");
+			MakeOneBar(i,waittime);
 		}
 
-		yield return new WaitForSeconds(barTime);
+		yield return new WaitForSeconds(barTime);//1小節分待つ
+		yield return new WaitForSeconds(waittime);//waittime分待つ
 
 		while(textNum < rowLength)
 		{
-			MakeOneBar(5);
+			if (MakeOneBar(5, 0) == false)
+			{
+				break;
+			}
 			yield return new WaitForSeconds(barTime);
 		}
 		yield return null;
-		/*while (a > 0)
-		{
-			Debug.Log("あと" + a + "個生成");
-			var obj = Instantiate(Pref);
-			
-			pos.x = -10;
-			pos.y = 0;
-			pos.z = (a % 4); 
-			obj.transform.position = pos;
-			n = obj.GetComponent<Note>();
-
-			n.noteType = (a % 4 == 0) ? NoteType.POS_S :
-						(a % 4 == 1) ? NoteType.POS_F :
-						(a % 4 == 2) ? NoteType.POS_J : NoteType.POS_L;
-
-			yield return Test1Coloutine();
-			a--;
-		}過去の遺産*/
-
+	
 
 	}
 
 	public float GetBPM()		//BPMを取得する関数!!!!!!!
 	{
-		/*while (Regex.IsMatch(splitText[textNum], "bpm") == false)//bpmが出でくるまで行を進める
-		{
-			textNum++;
-			if (textNum >= rowLength)//見つからず最後の行まで行ったら-1を返す
-			{
-				return -1;
-			}
-		}*/
-		if (SearchWord("bpm") == false)
+		
+		if (SearchWord("bpm=") == false)
 		{
 			return -1;
 		}
@@ -124,7 +106,21 @@ public class NoteMaster : MonoBehaviour
 
 	}
 
-	public bool MakeOneBar(int skipBar)
+	public float GetWaittime()
+	{
+		if(SearchWord("waittime=") == false)
+		{
+			return 0;
+		}
+		if (splitText[textNum].Split('.').Length > 2)//小数点が2個以上ある場合を例外処理
+		{
+			return 0;
+		}
+		return float.Parse(Regex.Replace(splitText[textNum], @"[^0-9.]", ""));//waittimeをフロート型にして返す
+
+	}
+
+	public bool MakeOneBar(int skipBar, float wait)
 	{
 		Vector3 pos,size;
 		pos.y = 0;
@@ -154,14 +150,14 @@ public class NoteMaster : MonoBehaviour
 
 		for(int i = 0; (startline + 1 + i ) < textNum; i++)
 		{
-			Debug.Log("小節の中の" + (i + 1) + "行目");
+			/*Debug.Log("小節の中の" + (i + 1) + "行目");*/
 			lineData = (Regex.Replace(splitText[startline + 1 + i], @"[^0-9A-Z]",""));
-			Debug.Log("lineData is" + lineData);
+			/*Debug.Log("lineData is" + lineData);*/
 			
 			if(lineData[0] != '0')
 			{
 				obj = Instantiate(Pref);
-				pos.x = (7 - (skipBar * barTime * speed) - (i * interval * speed));
+				pos.x = (7 - (skipBar * barTime * speed) - (i * interval * speed)- (wait * speed));
 				pos.z = (float)(lineData[0] - '1') / 2 + 0;
 				
 				obj.transform.position = pos;
@@ -178,7 +174,7 @@ public class NoteMaster : MonoBehaviour
 			if (lineData[1] != '0')
 			{
 				obj = Instantiate(Pref);
-				pos.x = (7 - (skipBar * barTime * speed) - (i * interval * speed));
+				pos.x = (7 - (skipBar * barTime * speed) - (i * interval * speed) - (wait * speed));
 				pos.z = (float)(lineData[1] - '1')/ 2 + 1;
 
 				obj.transform.position = pos;
@@ -194,7 +190,7 @@ public class NoteMaster : MonoBehaviour
 			if (lineData[2] != '0')
 			{
 				obj = Instantiate(Pref);
-				pos.x = (7 - (skipBar * barTime * speed) - (i * interval * speed));
+				pos.x = (7 - (skipBar * barTime * speed) - (i * interval * speed) - (wait * speed));
 				pos.z = (float)(lineData[2] - '1') / 2 + 2;
 
 				obj.transform.position = pos;
@@ -209,7 +205,7 @@ public class NoteMaster : MonoBehaviour
 			if (lineData[3] != '0')
 			{
 				obj = Instantiate(Pref);
-				pos.x = (7 - (skipBar * barTime * speed) - (i * interval * speed));
+				pos.x = (7 - (skipBar * barTime * speed) - (i * interval * speed) - (wait * speed));
 				pos.z = (float)(lineData[3] - '1') / 2 + 3;
 
 				obj.transform.position = pos;
@@ -233,6 +229,7 @@ public class NoteMaster : MonoBehaviour
 		/*文字列を検索し、最初のその文字列が見つかるまでtextNumを進める
 		 見つかればtrue,見つからなければfalse*/
 	{
+		int rowfrom = textNum;
 		if (textNum >= rowLength)//見つからず最後の行まで行ったら失敗
 		{
 			return false;
@@ -243,6 +240,7 @@ public class NoteMaster : MonoBehaviour
 			if (textNum >= rowLength)//見つからず最後の行まで行ったら失敗
 			{
 				Debug.Log(str + " は見つかりませんでした");
+				textNum = rowfrom;
 				return false;
 			}
 		}
