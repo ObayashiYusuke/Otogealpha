@@ -53,9 +53,7 @@ public class NoteMaster : MonoBehaviour
 	{
 		
 
-		Debug.Log("Test2Coloutine開始");
-
-		fumenAllText = (Resources.Load("Test", typeof(TextAsset)) as TextAsset).text;//テキストの読み込み
+		fumenAllText = (Resources.Load("Test2", typeof(TextAsset)) as TextAsset).text;//テキストの読み込み
 
 		splitText = fumenAllText.Split(char.Parse("\n"));//テキストを改行ごとに分ける
 		rowLength = fumenAllText.Split('\n').Length;
@@ -108,7 +106,7 @@ public class NoteMaster : MonoBehaviour
 			}
 			yield return new WaitForSeconds(barTime);
 		}
-		yield return null;
+		yield break;
 	
 
 	}
@@ -347,7 +345,7 @@ public class NoteMaster : MonoBehaviour
 		int sub = 0; 
 		float nowTime;
 
-		inputBuffer = inputBufferOld;
+		//inputBuffer = inputBufferOld;
 		inputBuffer = 0;
 		
 		if (Input.GetKeyDown(KeyCode.S))
@@ -370,25 +368,35 @@ public class NoteMaster : MonoBehaviour
 
 		if(inputBuffer != 0)
 		{
-			nowTime = Time.time -starttime;
+			nowTime = Time.time - starttime;
 
-			sub = noteList.FindIndex(x => x.time <= nowTime + 0.06 && x.time >= nowTime - 0.06
+			Debug.Log("push time is " + nowTime);
+
+			sub = noteList.FindIndex(x => x.time <= nowTime + 0.08 && x.time >= nowTime - 0.08
 				&& (x.noteType & inputBuffer) != 0);
 			if(sub != -1)
 			{
-				note = noteList[sub];//前後0.12秒をひろう
-				Destroy (note.gameObject);//破壊
+				note = noteList[sub];//前後0.16秒をひろう
+				Debug.Log("note.time is " + note.time);
+
 				if (note.time <= nowTime + 0.033 && note.time >= nowTime - 0.033)
 				{
 					score += 100;
 					Debug.Log("GREAT");
 				}
+				else if(note.time > nowTime)
+				{
+					score += 50;
+					Debug.Log("FAST");
+				}
 				else
 				{
 					score += 50;
-					Debug.Log("GOOD");
+					Debug.Log("LATE");
 				}
-				noteList.RemoveAt(sub);
+				//Destroy(note.gameObject);//破壊
+
+										 //noteList.RemoveAt(sub);
 			}
 			
 
@@ -403,20 +411,13 @@ public class NoteMaster : MonoBehaviour
 		scoreText.text = "Score : " + score.ToString();
 		lifeText.text = "Life : " + life.ToString();
 
-		inputBufferOld = inputBuffer;
 
 		if((Time.time - starttime) > endtime)
 		{
 			Finish();
 		}
 
-		if (inputBuffer != inputBufferOld)
-		{
-
-		}
-		{
-
-		}
+		
 	}
 
 	public void MusicPlay()
