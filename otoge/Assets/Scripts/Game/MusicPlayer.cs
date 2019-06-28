@@ -11,7 +11,7 @@ public class MusicPlayer : MonoBehaviour
     {
 		audioSource = gameObject.GetComponent<AudioSource>();
 		//audioSource.PlayOneShot(musicSound);
-		MusicPlay();
+
 	}
 
     // Update is called once per frame

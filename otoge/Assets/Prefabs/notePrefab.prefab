@@ -123,6 +123,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   noteType: 0
+  gameObject: {fileID: 0}
+  time: 0
 --- !u!114 &1535383251247074395
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -135,4 +137,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 25b6bba437c2213439f9e813a67d890e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dx: 15
+  dx: 13

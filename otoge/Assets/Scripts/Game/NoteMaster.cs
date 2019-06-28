@@ -89,10 +89,14 @@ public class NoteMaster : MonoBehaviour
 			MakeOneBar(i,waittime);
 		}
 
+
 		starttime = Time.time;
 
 
 		yield return new WaitForSeconds(barTime);//1小節分待つ
+
+		MusicPlay();
+
 		yield return new WaitForSeconds(waittime);//waittime分待つ
 
 
@@ -285,8 +289,8 @@ public class NoteMaster : MonoBehaviour
 	void Start()
     {
 		StartCoroutine(Test2Coroutine());
+
 		audioSource = gameObject.GetComponent<AudioSource>();
-		audioSource.PlayOneShot(musicSound);
 
 
 	}
@@ -304,10 +308,10 @@ public class NoteMaster : MonoBehaviour
 
 	}
 
-	/*public void MusicPlay()
+	public void MusicPlay()
 	{
 		audioSource.PlayOneShot(musicSound);
-	}*/
+	}
 	void Finish()
 	{
 		SceneManager.LoadScene("Result");
