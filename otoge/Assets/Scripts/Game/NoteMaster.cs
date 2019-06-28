@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using System.Text.RegularExpressions;
+using UnityEngine.SceneManagement;
+
 
 public class NoteMaster : MonoBehaviour
 {
@@ -10,6 +12,7 @@ public class NoteMaster : MonoBehaviour
 	public int score = 0;
 	public float speed = 10;
 	public GameObject Pref;
+	//public MusicPlayer musicPlayer; 参照したかった
 
 	//　読む込むテキストが書き込まれている.txtファイル
 	[SerializeField]
@@ -31,7 +34,8 @@ public class NoteMaster : MonoBehaviour
 
 	private float BPM = 1;
 	private float waittime = 0;	//譜面が曲に対して遅れる時間
-	private float barTime;
+	private float barTime;  //1小節の時間
+	private float endtime;
 
 	private IEnumerator Test1Coloutine()
 	{
@@ -51,6 +55,8 @@ public class NoteMaster : MonoBehaviour
 		splitText = fumenAllText.Split(char.Parse("\n"));//テキストを改行ごとに分ける
 		rowLength = fumenAllText.Split('\n').Length;
 
+		//ここから情報取得
+
 		BPM = GetBPM();
 
 		if(BPM <= 0)
@@ -69,11 +75,16 @@ public class NoteMaster : MonoBehaviour
 		waittime = GetWaittime();
 		Debug.Log("waittime is " + waittime);
 
+		endtime = GetEndtime();
+		Debug.Log("endtime is " + endtime);
+
 		for (int i = 1; i <= 5; i++)
 		{
 			Debug.Log(i + "小節目の生成");
 			MakeOneBar(i,waittime);
 		}
+
+		//musicPlayer.MusicPlay();実行したかった
 
 		yield return new WaitForSeconds(barTime);//1小節分待つ
 		yield return new WaitForSeconds(waittime);//waittime分待つ
@@ -91,7 +102,7 @@ public class NoteMaster : MonoBehaviour
 
 	}
 
-	public float GetBPM()		//BPMを取得する関数!!!!!!!
+	public float GetBPM()		//BPMを取得する関数!!!!!!! bpm=oo で記述
 	{
 		
 		if (SearchWord("bpm=") == false)
@@ -106,7 +117,7 @@ public class NoteMaster : MonoBehaviour
 
 	}
 
-	public float GetWaittime()
+	public float GetWaittime()		//譜面再生までの時間を取得 waittime=oo で記述
 	{
 		if(SearchWord("waittime=") == false)
 		{
@@ -119,6 +130,22 @@ public class NoteMaster : MonoBehaviour
 		return float.Parse(Regex.Replace(splitText[textNum], @"[^0-9.]", ""));//waittimeをフロート型にして返す
 
 	}
+
+	public float GetEndtime()	//開始から終了までの時間を取得する関数 endtime=ooで記述
+	{
+		if (SearchWord("endtime=") == false)
+		{
+			return 0;
+		}
+		if (splitText[textNum].Split('.').Length > 2)//小数点が2個以上ある場合を例外処理
+		{
+			return 0;
+		}
+		return float.Parse(Regex.Replace(splitText[textNum], @"[^0-9.]", ""));//endtimeをフロート型にして返す
+
+	}
+
+
 
 	public bool MakeOneBar(int skipBar, float wait)
 	{
@@ -261,5 +288,15 @@ public class NoteMaster : MonoBehaviour
     {
 		scoreText.text = "Score : " + score.ToString();
 		lifeText.text = "Life : " + life.ToString();
+
+		if(Time.time > endtime)
+		{
+			Finish();
+		}
+	}
+
+	void Finish()
+	{
+		SceneManager.LoadScene("Result");
 	}
 }
