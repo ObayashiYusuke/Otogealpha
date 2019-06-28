@@ -256,7 +256,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 264709895}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e2c583bbe7792234191eb8fde715ef44, type: 3}
   m_Name: 
@@ -450,6 +450,8 @@ MonoBehaviour:
   score: 0
   speed: 13
   Pref: {fileID: 7674377150795104054, guid: b0206e35eebaad64eab0af3fc9dbe7ce, type: 3}
+  inputBuffer: 0
+  inputBufferOld: 0
   textAsset: {fileID: 4900000, guid: e7a1fe476403ed141abe9278642313a2, type: 3}
   scoreText: {fileID: 377567035}
   lifeText: {fileID: 1430780437}

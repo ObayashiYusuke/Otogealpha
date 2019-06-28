@@ -12,6 +12,7 @@ public class NoteMaster : MonoBehaviour
 	public int score = 0;
 	public float speed = 10;
 	public GameObject Pref;
+	public int inputBuffer=0,inputBufferOld =0;//入力を数値化 oldはまだいらなかった
 
 
 	//　読む込むテキストが書き込まれている.txtファイル
@@ -85,7 +86,7 @@ public class NoteMaster : MonoBehaviour
 		for (int i = 1; i <= 5; i++)
 		{
 			Debug.Log(i + "小節目の生成");
-			MakeOneBar(i,waittime);
+			MakeOneBar(i,waittime,i);
 		}
 
 
@@ -99,9 +100,9 @@ public class NoteMaster : MonoBehaviour
 		yield return new WaitForSeconds(waittime);//waittime分待つ
 
 
-		while(textNum < rowLength)
+		for(int i = 6; textNum < rowLength;i++)
 		{
-			if (MakeOneBar(5, 0) == false)
+			if (MakeOneBar(5, 0,i) == false)
 			{
 				break;
 			}
@@ -157,7 +158,7 @@ public class NoteMaster : MonoBehaviour
 
 
 
-	public bool MakeOneBar(int skipBar, float wait)
+	public bool MakeOneBar(int skipBar, float wait, int barNumber)
 	{
 		Vector3 pos,size;
 		pos.y = 0;
@@ -165,15 +166,17 @@ public class NoteMaster : MonoBehaviour
 		size.y = 1;
 
 		Note n;
-		string lineData;
+		string lineData;//各行のデータを入れる
 		GameObject obj;
+
+
 
 		if(SearchWord("--") == false)
 		{
 			return false;
 		}
 		int startline = textNum;
-		Debug.Log("startline is " + startline);
+		//Debug.Log("startline is " + startline);
 
 		textNum++;
 
@@ -181,7 +184,7 @@ public class NoteMaster : MonoBehaviour
 		{
 			return false;
 		}
-		Debug.Log("textNum is " + textNum);
+		//Debug.Log("textNum is " + textNum);
 
 		float interval = barTime / (textNum - startline - 1);//(textNum - startline - 1)は行の数
 
@@ -204,8 +207,9 @@ public class NoteMaster : MonoBehaviour
 
 				n = obj.GetComponent<Note>();
 				n.noteType = GetNoteType(0,lineData[0] -'0');
-				/*n.gameObject = obj;
-				n.time = waittime + (1+)*barTime */
+				n.gameObject = obj;
+				n.time = waittime + (barNumber * barTime) + (i*interval);
+				//Debug.Log("time is " + n.time);
 
 				noteList.Add(n);
 				/*n.noteType = (lineData[0] == '1') ? NoteType.POS_S :
@@ -229,6 +233,9 @@ public class NoteMaster : MonoBehaviour
 
 				n = obj.GetComponent<Note>();
 				n.noteType = GetNoteType(1, lineData[1] - '0');
+				n.gameObject = obj;
+				n.time = waittime + (barNumber * barTime) + (i * interval);
+				//Debug.Log("time is " + n.time);
 
 				noteList.Add(n);
 				/*n.noteType = (lineData[1] == '1') ? NoteType.POS_F :
@@ -249,6 +256,9 @@ public class NoteMaster : MonoBehaviour
 
 				n = obj.GetComponent<Note>();
 				n.noteType = GetNoteType(2, lineData[2] - '0');
+				n.gameObject = obj;
+				n.time = waittime + ( barNumber * barTime) + (i * interval);
+				//Debug.Log("time is " + n.time);
 
 				noteList.Add(n);
 				/*n.noteType = (lineData[2] == '1') ? NoteType.POS_J :
@@ -268,6 +278,9 @@ public class NoteMaster : MonoBehaviour
 
 				n = obj.GetComponent<Note>();
 				n.noteType = GetNoteType(3, lineData[3] - '0');
+				n.gameObject = obj;
+				n.time = waittime + (barNumber * barTime) + (i * interval);
+				//Debug.Log("time is " + n.time);
 
 				noteList.Add(n);
 				/*n.noteType = NoteType.POS_L;*/
@@ -319,9 +332,67 @@ public class NoteMaster : MonoBehaviour
 	// Start is called before the first frame update
 	void Start()
     {
+		starttime = Time.time;
+
 		StartCoroutine(TestCoroutine());
 
 		audioSource = gameObject.GetComponent<AudioSource>();
+
+
+	}
+
+	private void FixedUpdate()
+	{
+		Note note;
+		int sub = 0; 
+		float nowTime;
+
+		inputBuffer = inputBufferOld;
+		inputBuffer = 0;
+		
+		if (Input.GetKeyDown(KeyCode.S))
+		{
+			inputBuffer += 1;
+		}
+
+		if (Input.GetKeyDown(KeyCode.F))
+		{
+			inputBuffer += 2;
+		}
+		if (Input.GetKeyDown(KeyCode.J))
+		{
+			inputBuffer += 4;
+		}
+		if (Input.GetKeyDown(KeyCode.L))
+		{
+			inputBuffer += 8;
+		}
+
+		if(inputBuffer != 0)
+		{
+			nowTime = Time.time -starttime;
+
+			sub = noteList.FindIndex(x => x.time <= nowTime + 0.06 && x.time >= nowTime - 0.06
+				&& (x.noteType & inputBuffer) != 0);
+			if(sub != -1)
+			{
+				note = noteList[sub];//前後0.12秒をひろう
+				Destroy (note.gameObject);//破壊
+				if (note.time <= nowTime + 0.033 && note.time >= nowTime - 0.033)
+				{
+					score += 100;
+					Debug.Log("GREAT");
+				}
+				else
+				{
+					score += 50;
+					Debug.Log("GOOD");
+				}
+				noteList.RemoveAt(sub);
+			}
+			
+
+		}
 
 
 	}
@@ -332,11 +403,20 @@ public class NoteMaster : MonoBehaviour
 		scoreText.text = "Score : " + score.ToString();
 		lifeText.text = "Life : " + life.ToString();
 
+		inputBufferOld = inputBuffer;
+
 		if((Time.time - starttime) > endtime)
 		{
 			Finish();
 		}
 
+		if (inputBuffer != inputBufferOld)
+		{
+
+		}
+		{
+
+		}
 	}
 
 	public void MusicPlay()
