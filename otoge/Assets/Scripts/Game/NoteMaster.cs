@@ -12,7 +12,7 @@ public class NoteMaster : MonoBehaviour
 	public int score = 0;
 	public float speed = 10;
 	public GameObject Pref;
-	//public MusicPlayer musicPlayer; 参照したかった
+
 
 	//　読む込むテキストが書き込まれている.txtファイル
 	[SerializeField]
@@ -31,11 +31,16 @@ public class NoteMaster : MonoBehaviour
 	public Text scoreText;
 	public Text lifeText;
 
+	//音楽情報の取得
+	public AudioClip musicSound;
+	private AudioSource audioSource;
+
 
 	private float BPM = 1;
 	private float waittime = 0;	//譜面が曲に対して遅れる時間
 	private float barTime;  //1小節の時間
 	private float endtime;
+	private float starttime;
 
 	private IEnumerator Test1Coloutine()
 	{
@@ -84,10 +89,12 @@ public class NoteMaster : MonoBehaviour
 			MakeOneBar(i,waittime);
 		}
 
-		//musicPlayer.MusicPlay();実行したかった
+		starttime = Time.time;
+
 
 		yield return new WaitForSeconds(barTime);//1小節分待つ
 		yield return new WaitForSeconds(waittime);//waittime分待つ
+
 
 		while(textNum < rowLength)
 		{
@@ -173,9 +180,9 @@ public class NoteMaster : MonoBehaviour
 		}
 		Debug.Log("textNum is " + textNum);
 
-		float interval = barTime / (textNum - startline - 1);
+		float interval = barTime / (textNum - startline - 1);//(textNum - startline - 1)は行の数
 
-		for(int i = 0; (startline + 1 + i ) < textNum; i++)
+		for (int i = 0; (startline + 1 + i ) < textNum; i++)
 		{
 			/*Debug.Log("小節の中の" + (i + 1) + "行目");*/
 			lineData = (Regex.Replace(splitText[startline + 1 + i], @"[^0-9A-Z]",""));
@@ -278,23 +285,29 @@ public class NoteMaster : MonoBehaviour
 	void Start()
     {
 		StartCoroutine(Test2Coroutine());
+		audioSource = gameObject.GetComponent<AudioSource>();
+		audioSource.PlayOneShot(musicSound);
 
-		
 
 	}
 
-    // Update is called once per frame
-    void Update()
+	// Update is called once per frame
+	void Update()
     {
 		scoreText.text = "Score : " + score.ToString();
 		lifeText.text = "Life : " + life.ToString();
 
-		if(Time.time > endtime)
+		if((Time.time - starttime) > endtime)
 		{
 			Finish();
 		}
+
 	}
 
+	/*public void MusicPlay()
+	{
+		audioSource.PlayOneShot(musicSound);
+	}*/
 	void Finish()
 	{
 		SceneManager.LoadScene("Result");

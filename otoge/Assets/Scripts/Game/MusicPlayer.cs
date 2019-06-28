@@ -10,7 +10,8 @@ public class MusicPlayer : MonoBehaviour
     void Start()
     {
 		audioSource = gameObject.GetComponent<AudioSource>();
-		audioSource.PlayOneShot(musicSound);
+		//audioSource.PlayOneShot(musicSound);
+		MusicPlay();
 	}
 
     // Update is called once per frame
@@ -18,8 +19,8 @@ public class MusicPlayer : MonoBehaviour
     {
 
 	}
-	/*public void MusicPlay()
+	public void MusicPlay()
 	{
 		audioSource.PlayOneShot(musicSound);
-	}*/
+	}
 }

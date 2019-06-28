@@ -2,7 +2,7 @@
 
 bpm=200
 waittime=0.2
-endtime=10
+endtime=6
 
 --
 1000

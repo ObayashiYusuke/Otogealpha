@@ -449,7 +449,6 @@ MonoBehaviour:
   score: 0
   speed: 15
   Pref: {fileID: 7674377150795104054, guid: b0206e35eebaad64eab0af3fc9dbe7ce, type: 3}
-  musicPlayer: {fileID: 1656755961}
   textAsset: {fileID: 4900000, guid: e7a1fe476403ed141abe9278642313a2, type: 3}
   scoreText: {fileID: 377567035}
   lifeText: {fileID: 1430780437}

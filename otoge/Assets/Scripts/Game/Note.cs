@@ -13,4 +13,6 @@ public class Note : MonoBehaviour
 {
 
 	public NoteType noteType;
+	public GameObject gameObject;
+	public float time;
 }
