@@ -34,22 +34,21 @@ public class NoteMaster : MonoBehaviour
 	//音楽情報の取得
 	public AudioClip musicSound;
 	private AudioSource audioSource;
-
-
 	private float BPM = 1;
+
+
+	//譜面情報
 	private float waittime = 0;	//譜面が曲に対して遅れる時間
 	private float barTime;  //1小節の時間
-	private float endtime;
-	private float starttime;
+	private float endtime;	//開始から終了までの時間
+	private float starttime;//比較用の開始時刻記録用
 
-	private IEnumerator Test1Coloutine()
-	{
-		Debug.Log("Test1Coloutine開始");
-		yield return new WaitForSeconds(0.1f);
+	//生成したノーツオブジェクトのリスト
+	List<Note> noteList = new List<Note>();
 
-	}
 
-	private IEnumerator Test2Coroutine()
+
+	private IEnumerator TestCoroutine()
 	{
 		
 
@@ -204,11 +203,19 @@ public class NoteMaster : MonoBehaviour
 				obj.transform.localScale = size;
 
 				n = obj.GetComponent<Note>();
-				n.noteType = (lineData[0] == '1') ? NoteType.POS_S :
+				n.noteType = GetNoteType(0,lineData[0] -'0');
+				/*n.gameObject = obj;
+				n.time = waittime + (1+)*barTime */
+
+				noteList.Add(n);
+				/*n.noteType = (lineData[0] == '1') ? NoteType.POS_S :
 							(lineData[0] == '2') ? NoteType.POS_S | NoteType.POS_F :
 							(lineData[0] == '3') ? NoteType.POS_S | NoteType.POS_F | NoteType.POS_J :
 							 NoteType.POS_S | NoteType.POS_F | NoteType.POS_J | NoteType.POS_L;
-			}
+				*/
+				
+
+				}
 			if (lineData[1] != '0')
 			{
 				obj = Instantiate(Pref);
@@ -221,9 +228,13 @@ public class NoteMaster : MonoBehaviour
 				obj.transform.localScale = size;
 
 				n = obj.GetComponent<Note>();
-				n.noteType = (lineData[1] == '1') ? NoteType.POS_F :
+				n.noteType = GetNoteType(1, lineData[1] - '0');
+
+				noteList.Add(n);
+				/*n.noteType = (lineData[1] == '1') ? NoteType.POS_F :
 							(lineData[1] == '2') ? NoteType.POS_F | NoteType.POS_J :
 							 NoteType.POS_F | NoteType.POS_J | NoteType.POS_L;
+				*/
 			}
 			if (lineData[2] != '0')
 			{
@@ -237,8 +248,12 @@ public class NoteMaster : MonoBehaviour
 				obj.transform.localScale = size;
 
 				n = obj.GetComponent<Note>();
-				n.noteType = (lineData[2] == '1') ? NoteType.POS_J :
+				n.noteType = GetNoteType(2, lineData[2] - '0');
+
+				noteList.Add(n);
+				/*n.noteType = (lineData[2] == '1') ? NoteType.POS_J :
 							 NoteType.POS_J | NoteType.POS_L;
+				*/
 			}
 			if (lineData[3] != '0')
 			{
@@ -252,16 +267,32 @@ public class NoteMaster : MonoBehaviour
 				obj.transform.localScale = size;
 
 				n = obj.GetComponent<Note>();
-				n.noteType = NoteType.POS_L;
-			}
+				n.noteType = GetNoteType(3, lineData[3] - '0');
 
+				noteList.Add(n);
+				/*n.noteType = NoteType.POS_L;*/
+			}
 
 		}
 
 		return true;
 
-
 	}
+
+	public int GetNoteType(int left, int size)
+	{
+		int a = 0;
+		for (int i = 1; size >= i; i++)
+		{
+			a = (a * 2) + 1;
+		}
+		for(int i = 1; left >= i; i++)
+		{
+			a *= 2;
+		}
+		return a;
+	}
+
 
 	public bool SearchWord(string str)
 		/*文字列を検索し、最初のその文字列が見つかるまでtextNumを進める
@@ -288,7 +319,7 @@ public class NoteMaster : MonoBehaviour
 	// Start is called before the first frame update
 	void Start()
     {
-		StartCoroutine(Test2Coroutine());
+		StartCoroutine(TestCoroutine());
 
 		audioSource = gameObject.GetComponent<AudioSource>();
 

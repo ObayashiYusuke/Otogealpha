@@ -15,7 +15,7 @@ public class JudgeLine : MonoBehaviour
 	private void FixedUpdate()
 	{
 		inputBuffer = 0;
-		if (Input.GetKeyDown(KeyCode.S))
+		/*if (Input.GetKeyDown(KeyCode.S))
 		{
 			inputBuffer |= (int)NoteType.POS_S;
 		}
@@ -31,6 +31,23 @@ public class JudgeLine : MonoBehaviour
 		if (Input.GetKeyDown(KeyCode.L))
 		{
 			inputBuffer |= (int)NoteType.POS_L;
+		}*/
+		if (Input.GetKeyDown(KeyCode.S))
+		{
+			inputBuffer += 1;
+		}
+
+		if (Input.GetKeyDown(KeyCode.F))
+		{
+			inputBuffer += 2;
+		}
+		if (Input.GetKeyDown(KeyCode.J))
+		{
+			inputBuffer += 4;
+		}
+		if (Input.GetKeyDown(KeyCode.L))
+		{
+			inputBuffer += 8;
 		}
 
 

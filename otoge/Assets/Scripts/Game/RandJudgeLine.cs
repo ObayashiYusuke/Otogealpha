@@ -15,7 +15,7 @@ public class RandJudgeLine : MonoBehaviour
 	private void FixedUpdate()
 	{
 		inputBuffer = 0;
-		if (Input.GetKeyDown(KeyCode.S))
+		/*if (Input.GetKeyDown(KeyCode.S))
 		{
 			inputBuffer |= (int)NoteType.POS_S; 
 		}
@@ -32,7 +32,7 @@ public class RandJudgeLine : MonoBehaviour
 		{
 			inputBuffer |= (int)NoteType.POS_L;
 		}
-
+		*/
 
 	}
 

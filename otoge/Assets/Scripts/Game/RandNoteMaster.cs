@@ -36,7 +36,7 @@ public class RandNoteMaster : MonoBehaviour
 		{
 			notekey = Random.value;//変数を一つ抽出
 
-			if(notekey > 0.5f)
+			/*if(notekey > 0.5f)
 			{
 				obj = Instantiate(Pref);
 				pos.x = -10;
@@ -83,7 +83,7 @@ public class RandNoteMaster : MonoBehaviour
 				n.noteType = NoteType.POS_L;
 
 			}
-
+			*/
 			count--;
 			if(count <= 0)
 			{
