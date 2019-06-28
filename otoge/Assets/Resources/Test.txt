@@ -1,6 +1,6 @@
 
 
-bpm=203
+bpm=202
 waittime=1.43
 endtime=35
 
