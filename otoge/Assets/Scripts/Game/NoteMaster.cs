@@ -13,7 +13,10 @@ public class NoteMaster : MonoBehaviour
 	public float speed = 10;
 	public GameObject Pref;
 	public int inputBuffer=0,inputBufferOld =0;//入力を数値化 oldはまだいらなかった
+	public int buttonnumber = 4;
 
+	public float greatJudge;
+	public float goodJudge;
 
 	//　読む込むテキストが書き込まれている.txtファイル
 	[SerializeField]
@@ -47,6 +50,7 @@ public class NoteMaster : MonoBehaviour
 	//生成したノーツオブジェクトのリスト
 	List<Note> noteList = new List<Note>();
 
+	float realWait = 0;
 
 
 	private IEnumerator TestCoroutine()
@@ -81,7 +85,8 @@ public class NoteMaster : MonoBehaviour
 		endtime = GetEndtime();
 		Debug.Log("endtime is " + endtime);
 
-		for (int i = 1; i <= 5; i++)
+
+		for (int i = 1; i <= 50; i++)
 		{
 			Debug.Log(i + "小節目の生成");
 			MakeOneBar(i,waittime,i);
@@ -90,25 +95,14 @@ public class NoteMaster : MonoBehaviour
 
 		starttime = Time.time;
 
-
+		Debug.Log("real start = " + starttime);
 		yield return new WaitForSeconds(barTime);//1小節分待つ
-
+		Debug.Log("real bar time = " + (Time.time - starttime).ToString());
+		realWait = Time.time - starttime;
 		MusicPlay();
 
-		yield return new WaitForSeconds(waittime);//waittime分待つ
-
-
-		for(int i = 6; textNum < rowLength;i++)
-		{
-			if (MakeOneBar(5, 0,i) == false)
-			{
-				break;
-			}
-			yield return new WaitForSeconds(barTime);
-		}
-		yield break;
-	
-
+		
+		
 	}
 
 	public float GetBPM()		//BPMを取得する関数!!!!!!! bpm=oo で記述
@@ -160,7 +154,7 @@ public class NoteMaster : MonoBehaviour
 	{
 		Vector3 pos,size;
 		pos.y = 0;
-		size.x = 1;
+		size.x = 0.3f;
 		size.y = 1;
 
 		Note n;
@@ -191,98 +185,32 @@ public class NoteMaster : MonoBehaviour
 			/*Debug.Log("小節の中の" + (i + 1) + "行目");*/
 			lineData = (Regex.Replace(splitText[startline + 1 + i], @"[^0-9A-Z]",""));
 			/*Debug.Log("lineData is" + lineData);*/
-			
-			if(lineData[0] != '0')
+			for(int l = 0;l < buttonnumber; l++)
 			{
-				obj = Instantiate(Pref);
-				pos.x = (7 - (skipBar * barTime * speed) - (i * interval * speed)- (wait * speed));
-				pos.z = (float)(lineData[0] - '1') / 2 + 0;
-				
-				obj.transform.position = pos;
-				
-				size.z = (float)(lineData[0] - '0') - 0.04f;
-				obj.transform.localScale = size;
+				if (lineData[l] != '0')
+				{
+					obj = Instantiate(Pref);
+					pos.x = (7 - (skipBar * barTime * speed) - (i * interval * speed) - (wait * speed));
+					pos.z = (float)(lineData[l] - '1') / 2 + l;
 
-				n = obj.GetComponent<Note>();
-				n.noteType = GetNoteType(0,lineData[0] -'0');
-				n.gameObject = obj;
-				n.time = waittime + (barNumber * barTime) + (i*interval);
-				//Debug.Log("time is " + n.time);
+					obj.transform.position = pos;
 
-				noteList.Add(n);
-				/*n.noteType = (lineData[0] == '1') ? NoteType.POS_S :
-							(lineData[0] == '2') ? NoteType.POS_S | NoteType.POS_F :
-							(lineData[0] == '3') ? NoteType.POS_S | NoteType.POS_F | NoteType.POS_J :
-							 NoteType.POS_S | NoteType.POS_F | NoteType.POS_J | NoteType.POS_L;
-				*/
-				
+					size.z = (float)(lineData[l] - '0') - 0.04f;
+					obj.transform.localScale = size;
+
+					n = obj.GetComponent<Note>();
+					n.noteType = GetNoteType(l, lineData[l] - '0');
+					n.gameObject = obj;
+					n.time = waittime + (barNumber * barTime) + (i * interval);
+					//Debug.Log("time is " + n.time);
+
+					noteList.Add(n);
 
 				}
-			if (lineData[1] != '0')
-			{
-				obj = Instantiate(Pref);
-				pos.x = (7 - (skipBar * barTime * speed) - (i * interval * speed) - (wait * speed));
-				pos.z = (float)(lineData[1] - '1')/ 2 + 1;
-
-				obj.transform.position = pos;
-
-				size.z = (float)(lineData[1] - '0') - 0.04f;
-				obj.transform.localScale = size;
-
-				n = obj.GetComponent<Note>();
-				n.noteType = GetNoteType(1, lineData[1] - '0');
-				n.gameObject = obj;
-				n.time = waittime + (barNumber * barTime) + (i * interval);
-				//Debug.Log("time is " + n.time);
-
-				noteList.Add(n);
-				/*n.noteType = (lineData[1] == '1') ? NoteType.POS_F :
-							(lineData[1] == '2') ? NoteType.POS_F | NoteType.POS_J :
-							 NoteType.POS_F | NoteType.POS_J | NoteType.POS_L;
-				*/
 			}
-			if (lineData[2] != '0')
-			{
-				obj = Instantiate(Pref);
-				pos.x = (7 - (skipBar * barTime * speed) - (i * interval * speed) - (wait * speed));
-				pos.z = (float)(lineData[2] - '1') / 2 + 2;
 
-				obj.transform.position = pos;
 
-				size.z = (float)(lineData[2] - '0') - 0.04f;
-				obj.transform.localScale = size;
-
-				n = obj.GetComponent<Note>();
-				n.noteType = GetNoteType(2, lineData[2] - '0');
-				n.gameObject = obj;
-				n.time = waittime + ( barNumber * barTime) + (i * interval);
-				//Debug.Log("time is " + n.time);
-
-				noteList.Add(n);
-				/*n.noteType = (lineData[2] == '1') ? NoteType.POS_J :
-							 NoteType.POS_J | NoteType.POS_L;
-				*/
-			}
-			if (lineData[3] != '0')
-			{
-				obj = Instantiate(Pref);
-				pos.x = (7 - (skipBar * barTime * speed) - (i * interval * speed) - (wait * speed));
-				pos.z = (float)(lineData[3] - '1') / 2 + 3;
-
-				obj.transform.position = pos;
-
-				size.z = (float)(lineData[3] - '0') - 0.04f;
-				obj.transform.localScale = size;
-
-				n = obj.GetComponent<Note>();
-				n.noteType = GetNoteType(3, lineData[3] - '0');
-				n.gameObject = obj;
-				n.time = waittime + (barNumber * barTime) + (i * interval);
-				//Debug.Log("time is " + n.time);
-
-				noteList.Add(n);
-				/*n.noteType = NoteType.POS_L;*/
-			}
+			
 
 		}
 
@@ -368,18 +296,20 @@ public class NoteMaster : MonoBehaviour
 
 		if(inputBuffer != 0)
 		{
-			nowTime = Time.time - starttime;
+			nowTime = Time.time - starttime - (realWait - barTime);//今の時間を送れた時間分引く
 
 			Debug.Log("push time is " + nowTime);
 
-			sub = noteList.FindIndex(x => x.time <= nowTime + 0.08 && x.time >= nowTime - 0.08
+			pushtime += "push time is " + nowTime + "\n";
+
+			sub = noteList.FindIndex(x => x.time <= nowTime + goodJudge && x.time >= nowTime - goodJudge
 				&& (x.noteType & inputBuffer) != 0);
 			if(sub != -1)
 			{
 				note = noteList[sub];//前後0.16秒をひろう
 				Debug.Log("note.time is " + note.time);
 
-				if (note.time <= nowTime + 0.033 && note.time >= nowTime - 0.033)
+				if (note.time <= nowTime + greatJudge && note.time >= nowTime - greatJudge)
 				{
 					score += 100;
 					Debug.Log("GREAT");
@@ -394,9 +324,9 @@ public class NoteMaster : MonoBehaviour
 					score += 50;
 					Debug.Log("LATE");
 				}
-				//Destroy(note.gameObject);//破壊
+				Destroy(note.gameObject);//破壊
 
-										 //noteList.RemoveAt(sub);
+										 noteList.RemoveAt(sub);
 			}
 			
 
@@ -428,4 +358,18 @@ public class NoteMaster : MonoBehaviour
 	{
 		SceneManager.LoadScene("Result");
 	}
+
+	string pushtime;
+	void OnGUI()
+	{
+		GUI.Label(new Rect(10, 10, 100, 5000), pushtime);
+
+		string notes = "";
+		for (int i = 0; i < 10; i++)
+		{
+			notes += "note time = " + noteList[i].time.ToString() + "\n";
+		}
+		GUI.Label(new Rect(150, 10, 1000, 5000), notes);
+	}
 }
+

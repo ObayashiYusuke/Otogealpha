@@ -12,46 +12,8 @@ public class JudgeLine : MonoBehaviour
 
 	}
 
-	private void FixedUpdate()
-	{
-		inputBuffer = 0;
-		/*if (Input.GetKeyDown(KeyCode.S))
-		{
-			inputBuffer |= (int)NoteType.POS_S;
-		}
-
-		if (Input.GetKeyDown(KeyCode.F))
-		{
-			inputBuffer |= (int)NoteType.POS_F;
-		}
-		if (Input.GetKeyDown(KeyCode.J))
-		{
-			inputBuffer |= (int)NoteType.POS_J;
-		}
-		if (Input.GetKeyDown(KeyCode.L))
-		{
-			inputBuffer |= (int)NoteType.POS_L;
-		}*/
-		if (Input.GetKeyDown(KeyCode.S))
-		{
-			inputBuffer += 1;
-		}
-
-		if (Input.GetKeyDown(KeyCode.F))
-		{
-			inputBuffer += 2;
-		}
-		if (Input.GetKeyDown(KeyCode.J))
-		{
-			inputBuffer += 4;
-		}
-		if (Input.GetKeyDown(KeyCode.L))
-		{
-			inputBuffer += 8;
-		}
 
 
-	}
 
 	// Update is called once per frame
 	void Update()
