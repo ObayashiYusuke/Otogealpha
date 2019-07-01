@@ -227,7 +227,6 @@ GameObject:
   - component: {fileID: 264709900}
   - component: {fileID: 264709899}
   - component: {fileID: 264709898}
-  - component: {fileID: 264709897}
   m_Layer: 0
   m_Name: hitline
   m_TagString: Untagged
@@ -244,25 +243,11 @@ Transform:
   m_GameObject: {fileID: 264709895}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 7, y: 0, z: 1.5}
-  m_LocalScale: {x: 1, y: 0.8, z: 5}
+  m_LocalScale: {x: 0.3, y: 0.8, z: 12}
   m_Children: []
   m_Father: {fileID: 786593681}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &264709897
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 264709895}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e2c583bbe7792234191eb8fde715ef44, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  noteMaster: {fileID: 637250329}
-  inputBuffer: 0
 --- !u!65 &264709898
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -448,10 +433,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   life: 8
   score: 0
-  speed: 17
+  speed: 15
   Pref: {fileID: 7674377150795104054, guid: b0206e35eebaad64eab0af3fc9dbe7ce, type: 3}
   inputBuffer: 0
   inputBufferOld: 0
+  buttonnumber: 8
+  greatJudge: 0.04
+  goodJudge: 0.1
   textAsset: {fileID: 4900000, guid: e7a1fe476403ed141abe9278642313a2, type: 3}
   scoreText: {fileID: 377567035}
   lifeText: {fileID: 1430780437}
@@ -639,7 +627,7 @@ Light:
   m_BounceIntensity: 1
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
-  m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 2.3509887e-38}
+  m_BoundingSphereOverride: {x: 1.43e-42, y: 0, z: 0, w: 1e-45}
   m_UseBoundingSphereOverride: 0
   m_ShadowRadius: 0
   m_ShadowAngle: 0
@@ -1101,7 +1089,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1081284855}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 4}
+  m_LocalPosition: {x: 0, y: 0, z: 8}
   m_LocalScale: {x: 20, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
