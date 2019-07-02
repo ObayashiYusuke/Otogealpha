@@ -437,7 +437,7 @@ MonoBehaviour:
   Pref: {fileID: 7674377150795104054, guid: b0206e35eebaad64eab0af3fc9dbe7ce, type: 3}
   inputBuffer: 0
   inputBufferOld: 0
-  buttonnumber: 8
+  buttonnumber: 4
   greatJudge: 0.04
   goodJudge: 0.1
   textAsset: {fileID: 4900000, guid: e7a1fe476403ed141abe9278642313a2, type: 3}
@@ -1089,7 +1089,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1081284855}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 8}
+  m_LocalPosition: {x: 0, y: 0, z: 4}
   m_LocalScale: {x: 20, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}

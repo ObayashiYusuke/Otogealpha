@@ -57,7 +57,7 @@ public class NoteMaster : MonoBehaviour
 	{
 		
 
-		fumenAllText = (Resources.Load("Test8simple", typeof(TextAsset)) as TextAsset).text;//テキストの読み込み
+		fumenAllText = (Resources.Load("Test4A", typeof(TextAsset)) as TextAsset).text;//テキストの読み込み
 
 		splitText = fumenAllText.Split(char.Parse("\n"));//テキストを改行ごとに分ける
 		rowLength = fumenAllText.Split('\n').Length;
@@ -271,11 +271,11 @@ public class NoteMaster : MonoBehaviour
 	{
 		Note note;
 		int sub = 0; 
-		float nowTime;
+		float nowTime =0;
 
 		//inputBuffer = inputBufferOld;
 		inputBuffer = 0;
-		/*
+		
 		//4ボタン
 		if (Input.GetKeyDown(KeyCode.S))
 		{
@@ -294,7 +294,8 @@ public class NoteMaster : MonoBehaviour
 		{
 			inputBuffer += 8;
 		}
-		*/
+		
+		/*
 		if (Input.GetKeyDown(KeyCode.S))
 		{
 			inputBuffer += 1;
@@ -329,6 +330,7 @@ public class NoteMaster : MonoBehaviour
 		{
 			inputBuffer += 128;
 		}
+		*/
 
 		if (inputBuffer != 0)
 		{
@@ -337,10 +339,13 @@ public class NoteMaster : MonoBehaviour
 			Debug.Log("push time is " + nowTime);
 
 			pushtime += "push time is " + nowTime + "\n";
+		}
+		while (inputBuffer != 0)
+		{
 
 			sub = noteList.FindIndex(x => x.time <= nowTime + goodJudge && x.time >= nowTime - goodJudge
-				&& (x.noteType & inputBuffer) != 0);
-			if(sub != -1)
+					&& (x.noteType & inputBuffer) != 0);
+			if (sub != -1)
 			{
 				note = noteList[sub];
 				Debug.Log("note.time is " + note.time);
@@ -350,7 +355,7 @@ public class NoteMaster : MonoBehaviour
 					score += 100;
 					Debug.Log("GREAT");
 				}
-				else if(note.time > nowTime)
+				else if (note.time > nowTime)
 				{
 					score += 50;
 					Debug.Log("FAST");
@@ -360,13 +365,15 @@ public class NoteMaster : MonoBehaviour
 					score += 50;
 					Debug.Log("LATE");
 				}
+				inputBuffer = inputBuffer & ~note.noteType;//判定したのノーツの入力部分を0マスク
 				Destroy(note.gameObject);//破壊
+				noteList.RemoveAt(sub);//リストから消去
 
-										 noteList.RemoveAt(sub);
 			}
-			
-
+			else break;//条件に合うノーツがなくなったら脱出
 		}
+
+		
 
 
 	}
@@ -401,7 +408,7 @@ public class NoteMaster : MonoBehaviour
 		GUI.Label(new Rect(10, 10, 100, 5000), pushtime);
 
 		string notes = "";
-		for (int i = 0; i < 10; i++)
+		for (int i = 0; i < noteList.Count; i++)
 		{
 			notes += "note time = " + noteList[i].time.ToString() + "\n";
 		}
