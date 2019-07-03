@@ -15,4 +15,20 @@ public class Note : MonoBehaviour
 	public int noteType;
 	public GameObject gameObject;
 	public float time;
+	private float goodTime = 10;//消えるまでの時間
+	private NoteMaster notemaster;
+
+	private void Update()
+	{
+		if(Time.time - NoteMaster.starttime - goodTime> time && NoteMaster.starttime != 0 )
+		{
+			NoteMaster.miss++;
+			Destroy(this.gameObject);
+		}
+	}
+
+	public void SetGoodTime(float x)
+	{
+		goodTime = x;
+	}
 }

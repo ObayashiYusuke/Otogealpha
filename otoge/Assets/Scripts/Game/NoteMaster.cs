@@ -8,8 +8,12 @@ using UnityEngine.SceneManagement;
 
 public class NoteMaster : MonoBehaviour
 {
-	public int life = 8;
-	public int score = 0;
+	//public int life = 8;
+	public static int score = 0;
+	public static int great = 0;
+	public static int fast = 0;
+	public static int late = 0;
+	public static int miss = 0;
 	public float speed = 10;
 	public GameObject Pref;
 	public int inputBuffer=0,inputBufferOld =0;//入力を数値化 oldはまだいらなかった
@@ -33,7 +37,11 @@ public class NoteMaster : MonoBehaviour
 
 	//スコア表示
 	public Text scoreText;
-	public Text lifeText;
+	public Text greatText;
+	public Text fastText;
+	public Text lateText;
+	public Text missText;
+	public Text judgeText;
 
 	//音楽情報の取得
 	public AudioClip musicSound;
@@ -42,25 +50,28 @@ public class NoteMaster : MonoBehaviour
 
 
 	//譜面情報
+	private string noteData;
 	private float waittime = 0;	//譜面が曲に対して遅れる時間
 	private float barTime;  //1小節の時間
-	private float endtime;	//開始から終了までの時間
-	private float starttime;//比較用の開始時刻記録用
+	private float endtime;  //開始から終了までの時間
+	public  static float starttime = 0;//比較用の開始時刻記録用
 
 	//生成したノーツオブジェクトのリスト
 	List<Note> noteList = new List<Note>();
 
 	float realWait = 0;
-
+	public float nowTime = 0;
 
 	private IEnumerator TestCoroutine()
 	{
-		
+		speed = 5;
 
-		fumenAllText = (Resources.Load("Test4A", typeof(TextAsset)) as TextAsset).text;//テキストの読み込み
+		fumenAllText = (Resources.Load(noteData, typeof(TextAsset)) as TextAsset).text;//テキストの読み込み
 
 		splitText = fumenAllText.Split(char.Parse("\n"));//テキストを改行ごとに分ける
 		rowLength = fumenAllText.Split('\n').Length;
+
+		musicSound = (Resources.Load("KIKKUNのテーマ", typeof(AudioClip)) as AudioClip);
 
 		//ここから情報取得
 
@@ -158,6 +169,7 @@ public class NoteMaster : MonoBehaviour
 		size.y = 1;
 
 		Note n;
+		NoteMove nm;
 		string lineData;//各行のデータを入れる
 		GameObject obj;
 
@@ -202,6 +214,9 @@ public class NoteMaster : MonoBehaviour
 					n.noteType = GetNoteType(l, lineData[l] - '0');
 					n.gameObject = obj;
 					n.time = waittime + (barNumber * barTime) + (i * interval);
+					n.SetGoodTime(goodJudge + 0.1f);
+					nm = obj.GetComponent<NoteMove>();
+					nm.SetSpeed(speed);
 					//Debug.Log("time is " + n.time);
 
 					noteList.Add(n);
@@ -258,6 +273,13 @@ public class NoteMaster : MonoBehaviour
 	// Start is called before the first frame update
 	void Start()
     {
+		judgeText.text = "";
+
+		noteData = SelectMasterKari.noteName;
+		//score = 0;great = 0; fast = 0;late = 0;miss = 0;
+
+
+
 		starttime = Time.time;
 
 		StartCoroutine(TestCoroutine());
@@ -271,7 +293,7 @@ public class NoteMaster : MonoBehaviour
 	{
 		Note note;
 		int sub = 0; 
-		float nowTime =0;
+
 
 		//inputBuffer = inputBufferOld;
 		inputBuffer = 0;
@@ -354,16 +376,22 @@ public class NoteMaster : MonoBehaviour
 				{
 					score += 100;
 					Debug.Log("GREAT");
+					great++;
+					judgeText.text = "Great";
 				}
 				else if (note.time > nowTime)
 				{
 					score += 50;
 					Debug.Log("FAST");
+					fast++;
+					judgeText.text = "Fast";
 				}
 				else
 				{
 					score += 50;
 					Debug.Log("LATE");
+					late++;
+					judgeText.text = "Late";
 				}
 				inputBuffer = inputBuffer & ~note.noteType;//判定したのノーツの入力部分を0マスク
 				Destroy(note.gameObject);//破壊
@@ -382,11 +410,15 @@ public class NoteMaster : MonoBehaviour
 	void Update()
     {
 		scoreText.text = "Score : " + score.ToString();
-		lifeText.text = "Life : " + life.ToString();
 
+		greatText.text = "Great : " + great.ToString();
+		fastText.text = "Fast : " + fast.ToString();
+		lateText.text = "Late : " + late.ToString();
+		missText.text = "Miss : " + miss.ToString();
 
-		if((Time.time - starttime) > endtime)
+		if ((Time.time - starttime) > endtime)
 		{
+			starttime = 0;
 			Finish();
 		}
 

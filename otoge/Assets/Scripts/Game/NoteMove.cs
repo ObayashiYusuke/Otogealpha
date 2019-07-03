@@ -5,10 +5,15 @@ using UnityEngine;
 public class NoteMove : MonoBehaviour
 {
 
-	public float dx;
+	private float dx;
 	//public NoteMaster noteMaster;
 
 	// Start is called before the first frame update
+
+	public void SetSpeed(float x)
+	{
+		dx = x;
+	} 
 	void Start()
 	{
 		//dx = noteMaster.speed;
