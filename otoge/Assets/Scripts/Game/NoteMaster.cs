@@ -5,7 +5,6 @@ using UnityEngine.UI;
 using System.Text.RegularExpressions;
 using UnityEngine.SceneManagement;
 
-
 public class NoteMaster : MonoBehaviour
 {
 	public static int score = 0;
@@ -63,68 +62,13 @@ public class NoteMaster : MonoBehaviour
 
 	private IEnumerator TestCoroutine()
 	{
-		speed = 10;
-
-		fumenAllText = (Resources.Load(noteData, typeof(TextAsset)) as TextAsset).text;//テキストの読み込み
-
-		splitText = fumenAllText.Split(char.Parse("\n"));//テキストを改行ごとに分ける
-		rowLength = fumenAllText.Split('\n').Length;
-
-		musicSound = (Resources.Load("KIKKUNのテーマ", typeof(AudioClip)) as AudioClip);
-
-		//ここから情報取得
-
-		BPM = GetBPM();
-
-		if(BPM <= 0)
-		{
-			Debug.Log("BPM is not found.");
-			BPM = 1;
-		}
-		else if (BPM > 0)
-		{
-			BPM = float.Parse(Regex.Replace(splitText[textNum], @"[bpm=]", ""));
-			Debug.Log("BPM IS " + BPM);
-		}
-		barTime = 60 / (BPM / 4);
-		Debug.Log("barTime is" + barTime);
-
-		waittime = GetWaittime();
-		Debug.Log("waittime is " + waittime);
-
-		endtime = GetEndtime();
-		Debug.Log("endtime is " + endtime);
-
-
-		float before = Time.time;
-
-		for (int i = 1; i <= 50; i++)
-		{
-			//Debug.Log(i + "小節目の生成");
-			MakeOneBar(i,waittime,i);
-		}
-
-		starttime = Time.time;
-
-		Debug.Log("生成時間 : " + (starttime - before).ToString());
-
-
-		Debug.Log("real start = " + starttime);
-
-		for(int i = 0; i < noteList.Count; i++)
-		{
-			noteList[i].noteMove.StartMove();
-		}
-
+		//
 		yield return new WaitForSeconds(barTime);//1小節分待つ
 		Debug.Log("real bar time = " + (Time.time - starttime).ToString());
 		realWait = Time.time - starttime;
 
 		Debug.Log("realWait =" + realWait.ToString());
 		MusicPlay();
-
-		
-		
 	}
 
 	public float GetBPM()		//BPMを取得する関数!!!!!!! bpm=oo で記述
@@ -184,8 +128,6 @@ public class NoteMaster : MonoBehaviour
 		string lineData;//各行のデータを入れる
 		GameObject obj;
 
-
-
 		if(SearchWord("--") == false)
 		{
 			return false;
@@ -237,10 +179,6 @@ public class NoteMaster : MonoBehaviour
 
 				}
 			}
-
-
-			
-
 		}
 
 		return true;
@@ -292,6 +230,62 @@ public class NoteMaster : MonoBehaviour
 		noteData = SelectMasterKari.noteName;
 		score = 0;great = 0; fast = 0;late = 0;miss = 0;
 
+
+		speed = 10;
+
+		fumenAllText = (Resources.Load(noteData, typeof(TextAsset)) as TextAsset).text;//テキストの読み込み
+
+		splitText = fumenAllText.Split(char.Parse("\n"));//テキストを改行ごとに分ける
+		rowLength = fumenAllText.Split('\n').Length;
+
+		musicSound = (Resources.Load("KIKKUNのテーマ", typeof(AudioClip)) as AudioClip);
+
+		//ここから情報取得
+
+		BPM = GetBPM();
+
+		if (BPM <= 0)
+		{
+			Debug.Log("BPM is not found.");
+			BPM = 1;
+		}
+		else if (BPM > 0)
+		{
+			BPM = float.Parse(Regex.Replace(splitText[textNum], @"[bpm=]", ""));
+			Debug.Log("BPM IS " + BPM);
+		}
+		barTime = 60 / (BPM / 4);
+		Debug.Log("barTime is" + barTime);
+
+		waittime = GetWaittime();
+		Debug.Log("waittime is " + waittime);
+
+		endtime = GetEndtime();
+		Debug.Log("endtime is " + endtime);
+
+
+		float before = Time.time;
+
+		for (int i = 1; i <= 50; i++)
+		{
+			if(i == 1) Debug.Log("real start 1 = " + Time.time);
+
+			MakeOneBar(i, waittime, i);
+		}
+		Debug.Log("real start ON creefd = " + Time.time);
+
+		starttime = Time.time;
+
+		Debug.Log("生成時間 : " + (starttime - before).ToString());
+
+
+		Debug.Log("real start = " + starttime);
+
+		for (int i = 0; i < noteList.Count; i++)
+		{
+			noteList[i].noteMove.StartMove();
+		}
+
 		StartCoroutine(TestCoroutine());
 
 		audioSource = gameObject.GetComponent<AudioSource>();
@@ -299,13 +293,12 @@ public class NoteMaster : MonoBehaviour
 
 	}
 
-	private void FixedUpdate()
+	private void JudgeButton()
 	{
+		//Debug.Log(noteList[0].transform.position);
 		Note note;
 		int sub = 0; 
 
-
-		//inputBuffer = inputBufferOld;
 		inputBuffer = 0;
 		
 		//4ボタン
@@ -327,42 +320,6 @@ public class NoteMaster : MonoBehaviour
 			inputBuffer += 8;
 		}
 		
-		/*
-		if (Input.GetKeyDown(KeyCode.S))
-		{
-			inputBuffer += 1;
-		}
-
-		if (Input.GetKeyDown(KeyCode.D))
-		{
-			inputBuffer += 2;
-		}
-		if (Input.GetKeyDown(KeyCode.F))
-		{
-			inputBuffer += 4;
-		}
-		if (Input.GetKeyDown(KeyCode.G))
-		{
-			inputBuffer += 8;
-		}
-		if (Input.GetKeyDown(KeyCode.H))
-		{
-			inputBuffer += 16;
-		}
-
-		if (Input.GetKeyDown(KeyCode.J))
-		{
-			inputBuffer += 32;
-		}
-		if (Input.GetKeyDown(KeyCode.K))
-		{
-			inputBuffer += 64;
-		}
-		if (Input.GetKeyDown(KeyCode.L))
-		{
-			inputBuffer += 128;
-		}
-		*/
 
 		if (inputBuffer != 0)
 		{
@@ -410,10 +367,6 @@ public class NoteMaster : MonoBehaviour
 			}
 			else break;//条件に合うノーツがなくなったら脱出
 		}
-
-		
-
-
 	}
 
 	// Update is called once per frame
@@ -425,6 +378,8 @@ public class NoteMaster : MonoBehaviour
 		fastText.text = "Fast : " + fast.ToString();
 		lateText.text = "Late : " + late.ToString();
 		missText.text = "Miss : " + miss.ToString();
+
+		JudgeButton();
 
 		if ((Time.time - starttime) > endtime)
 		{

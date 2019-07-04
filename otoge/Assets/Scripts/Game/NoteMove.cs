@@ -7,7 +7,6 @@ public class NoteMove : MonoBehaviour
 
 	private float dx;
 	private bool move = false;
-	//public NoteMaster noteMaster;
 
 	// Start is called before the first frame update
 
@@ -26,8 +25,9 @@ public class NoteMove : MonoBehaviour
 	}
 
 	// Update is called once per frame
-	void FixedUpdate()
+	void Update()
 	{
+		Debug.Log(Time.time);
 		if (move == true)
 		{
 			this.transform.position += new Vector3(1 * dx * Time.deltaTime, 0, 0);//等速移動
