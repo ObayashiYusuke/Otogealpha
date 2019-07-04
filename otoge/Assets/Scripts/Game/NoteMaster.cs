@@ -110,6 +110,12 @@ public class NoteMaster : MonoBehaviour
 
 
 		Debug.Log("real start = " + starttime);
+
+		for(int i = 0; i < noteList.Count; i++)
+		{
+			noteList[i].noteMove.StartMove();
+		}
+
 		yield return new WaitForSeconds(barTime);//1小節分待つ
 		Debug.Log("real bar time = " + (Time.time - starttime).ToString());
 		realWait = Time.time - starttime;
@@ -208,6 +214,9 @@ public class NoteMaster : MonoBehaviour
 				{
 					obj = Instantiate(Pref);
 					pos.x = (7 - (skipBar * barTime * speed) - (i * interval * speed) - (wait * speed));
+
+					Debug.Log("pos.x = " + pos.x);
+
 					pos.z = (float)(lineData[l] - '1') / 2 + l;
 
 					obj.transform.position = pos;
@@ -215,13 +224,13 @@ public class NoteMaster : MonoBehaviour
 					size.z = (float)(lineData[l] - '0') - 0.04f;
 					obj.transform.localScale = size;
 
-					n = obj.GetComponent<Note>();
-					n.noteType = GetNoteType(l, lineData[l] - '0');
-					n.gameObject = obj;
-					n.time = waittime + (barNumber * barTime) + (i * interval);
-					n.SetGoodTime(goodJudge + 0.1f);
 					nm = obj.GetComponent<NoteMove>();
 					nm.SetSpeed(speed);
+					n = obj.GetComponent<Note>();
+					n.noteType = GetNoteType(l, lineData[l] - '0');
+					n.noteMove = nm;
+					n.time = waittime + (barNumber * barTime) + (i * interval);
+					n.SetGoodTime(goodJudge + 0.1f);
 					//Debug.Log("time is " + n.time);
 
 					noteList.Add(n);
@@ -267,7 +276,7 @@ public class NoteMaster : MonoBehaviour
 			textNum++;
 			if (textNum >= rowLength)//見つからず最後の行まで行ったら失敗
 			{
-				Debug.Log(str + " は見つかりませんでした");
+				
 				textNum = rowfrom;
 				return false;
 			}
@@ -281,11 +290,7 @@ public class NoteMaster : MonoBehaviour
 		judgeText.text = "";
 
 		noteData = SelectMasterKari.noteName;
-		//score = 0;great = 0; fast = 0;late = 0;miss = 0;
-
-
-
-		starttime = Time.time;
+		score = 0;great = 0; fast = 0;late = 0;miss = 0;
 
 		StartCoroutine(TestCoroutine());
 
