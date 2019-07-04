@@ -8,7 +8,6 @@ using UnityEngine.SceneManagement;
 
 public class NoteMaster : MonoBehaviour
 {
-	//public int life = 8;
 	public static int score = 0;
 	public static int great = 0;
 	public static int fast = 0;
@@ -54,7 +53,7 @@ public class NoteMaster : MonoBehaviour
 	private float waittime = 0;	//譜面が曲に対して遅れる時間
 	private float barTime;  //1小節の時間
 	private float endtime;  //開始から終了までの時間
-	public  static float starttime = 0;//比較用の開始時刻記録用
+	public static float starttime = 0;//比較用の開始時刻記録用
 
 	//生成したノーツオブジェクトのリスト
 	List<Note> noteList = new List<Note>();
@@ -64,7 +63,7 @@ public class NoteMaster : MonoBehaviour
 
 	private IEnumerator TestCoroutine()
 	{
-		speed = 5;
+		speed = 10;
 
 		fumenAllText = (Resources.Load(noteData, typeof(TextAsset)) as TextAsset).text;//テキストの読み込み
 
@@ -97,19 +96,25 @@ public class NoteMaster : MonoBehaviour
 		Debug.Log("endtime is " + endtime);
 
 
+		float before = Time.time;
+
 		for (int i = 1; i <= 50; i++)
 		{
-			Debug.Log(i + "小節目の生成");
+			//Debug.Log(i + "小節目の生成");
 			MakeOneBar(i,waittime,i);
 		}
 
-
 		starttime = Time.time;
+
+		Debug.Log("生成時間 : " + (starttime - before).ToString());
+
 
 		Debug.Log("real start = " + starttime);
 		yield return new WaitForSeconds(barTime);//1小節分待つ
 		Debug.Log("real bar time = " + (Time.time - starttime).ToString());
 		realWait = Time.time - starttime;
+
+		Debug.Log("realWait =" + realWait.ToString());
 		MusicPlay();
 
 		

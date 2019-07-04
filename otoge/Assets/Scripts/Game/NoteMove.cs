@@ -16,12 +16,11 @@ public class NoteMove : MonoBehaviour
 	} 
 	void Start()
 	{
-		//dx = noteMaster.speed;
 
 	}
 
 	// Update is called once per frame
-	void Update()
+	void FixedUpdate()
 	{
 
 		this.transform.position += new Vector3(1 * dx * Time.deltaTime, 0, 0);//等速移動
