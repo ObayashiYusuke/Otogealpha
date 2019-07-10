@@ -40,6 +40,11 @@ public class NoteMaster : MonoBehaviour
 	public Text lateText;
 	public Text missText;
 	public Text judgeText;
+	public Text resultScoreText;
+	public Text resultGreatText;
+	public Text resultFastText;
+	public Text resultLateText;
+	public Text resultMissText;
 
 	//音楽情報の取得
 	public AudioClip musicSound;
@@ -60,17 +65,27 @@ public class NoteMaster : MonoBehaviour
 	//譜面情報を取得しておく配列
 	private object[] allNoteData;
 
+	GameObject imageObject;
+	Image imageComponent;
 	float realWait = 0;
 	public float nowTime = 0;
 
 	private int state = 0;//状態を記録 0:曲選択 1:オブジェクト生成後待機 2:プレイ中(曲再生後) 3:リザルト 
 	private void Start()
 	{
-		Debug.Log("aa");
+		 imageObject = GameObject.Find("ResultImage");//結果の画像オブジェクトを取得
+		imageComponent = imageObject.GetComponent<Image>();
+		imageObject.SetActive(false);
 		allNoteData = (Resources.LoadAll("NoteData",typeof(TextAsset)));
 		textAsset = (TextAsset)allNoteData[0];
 		noteData = textAsset.text;
 		Debug.Log("data: " + noteData);
+
+		resultGreatText.enabled = false;
+		resultFastText.enabled = false;
+		resultLateText.enabled = false;
+		resultMissText.enabled = false;
+		resultScoreText.enabled = false;
 		//Debug.Log("object" + allNoteData[0].ToString());
 		audioSource = gameObject.GetComponent<AudioSource>();
 	}
@@ -79,12 +94,15 @@ public class NoteMaster : MonoBehaviour
 	{
 
 		scoreText.text = "Score : " + score.ToString();
-
 		greatText.text = "Great : " + great.ToString();
 		fastText.text = "Fast : " + fast.ToString();
 		lateText.text = "Late : " + late.ToString();
 		missText.text = "Miss : " + miss.ToString();
-
+		resultScoreText.text = "Score : " + score.ToString();
+		resultGreatText.text = "Great : " + great.ToString();
+		resultFastText.text = "Fast : " + fast.ToString();
+		resultLateText.text = "Late : " + late.ToString();
+		resultMissText.text = "Miss : " + miss.ToString();
 		JudgeButton();
 
 		if (state == 0 && Input.GetKeyDown(KeyCode.Return))
@@ -104,7 +122,27 @@ public class NoteMaster : MonoBehaviour
 			state = 3;
 			Finish();
 		}
+		else if(state == 3 && Input.GetKeyDown(KeyCode.Return))
+		{
+			state = 0;
+			resultGreatText.enabled = false;
+			resultFastText.enabled = false;
+			resultLateText.enabled = false;
+			resultMissText.enabled = false;
+			resultScoreText.enabled = false;
+
+			scoreText.enabled = true;
+			greatText.enabled = true;
+			fastText.enabled = true;
+			lateText.enabled = true;
+			missText.enabled = true;
+
+			score = 0; great = 0; fast = 0; late = 0; miss = 0;
+
+			imageObject.SetActive(false);
+		}
 	}
+
 	public float GetBPM()		//BPMを取得する関数!!!!!!! bpm=oo で記述
 	{
 		
@@ -321,6 +359,7 @@ public class NoteMaster : MonoBehaviour
 		{
 			noteList[i].noteMove.StartMove();
 		}
+		textNum = 0;
 	}
 
 	private void JudgeButton()
@@ -412,7 +451,20 @@ public class NoteMaster : MonoBehaviour
 	}
 	void Finish()
 	{
-		SceneManager.LoadScene("Result");
+		audioSource.Stop();
+		imageObject.SetActive(true);
+
+		resultGreatText.enabled = true;
+		resultFastText.enabled = true;
+		resultLateText.enabled = true;
+		resultMissText.enabled = true;
+		resultScoreText.enabled = true;
+
+		scoreText.enabled = false;
+		greatText.enabled = false;
+		fastText.enabled = false;
+		lateText.enabled = false;
+		missText.enabled = false;
 	}
 
 	string pushtime;
