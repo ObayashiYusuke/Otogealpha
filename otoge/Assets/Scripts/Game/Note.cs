@@ -20,7 +20,7 @@ public class Note : MonoBehaviour
 
 	private void Update()
 	{
-		if(Time.time - NoteMaster.starttime - goodTime> time && NoteMaster.starttime != 0 )
+		if(Time.time - NoteMaster.starttime - goodTime > time && NoteMaster.starttime != 0 )
 		{
 			NoteMaster.miss++;
 			Destroy(gameObject);

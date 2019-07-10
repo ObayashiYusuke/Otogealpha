@@ -57,20 +57,54 @@ public class NoteMaster : MonoBehaviour
 	//生成したノーツオブジェクトのリスト
 	List<Note> noteList = new List<Note>();
 
+	//譜面情報を取得しておく配列
+	private object[] allNoteData;
+
 	float realWait = 0;
 	public float nowTime = 0;
 
-	private IEnumerator TestCoroutine()
+	private int state = 0;//状態を記録 0:曲選択 1:オブジェクト生成後待機 2:プレイ中(曲再生後) 3:リザルト 
+	private void Start()
 	{
-		//
-		yield return new WaitForSeconds(barTime);//1小節分待つ
-		Debug.Log("real bar time = " + (Time.time - starttime).ToString());
-		realWait = Time.time - starttime;
-
-		Debug.Log("realWait =" + realWait.ToString());
-		MusicPlay();
+		Debug.Log("aa");
+		allNoteData = (Resources.LoadAll("NoteData",typeof(TextAsset)));
+		textAsset = (TextAsset)allNoteData[0];
+		noteData = textAsset.text;
+		Debug.Log("data: " + noteData);
+		//Debug.Log("object" + allNoteData[0].ToString());
+		audioSource = gameObject.GetComponent<AudioSource>();
 	}
 
+	void Update()
+	{
+
+		scoreText.text = "Score : " + score.ToString();
+
+		greatText.text = "Great : " + great.ToString();
+		fastText.text = "Fast : " + fast.ToString();
+		lateText.text = "Late : " + late.ToString();
+		missText.text = "Miss : " + miss.ToString();
+
+		JudgeButton();
+
+		if (state == 0 && Input.GetKeyDown(KeyCode.Return))
+		{//enterが押されたらオブジェクト生成に移行
+			state = 1;
+			MakeNote();
+		}
+		else if (state == 1 && Time.time >= (starttime + barTime))
+		{
+			state = 2;
+			MusicPlay();
+		}
+
+		else if (state == 2 && (Time.time - starttime) > endtime)
+		{
+			starttime = 0;
+			state = 3;
+			Finish();
+		}
+	}
 	public float GetBPM()		//BPMを取得する関数!!!!!!! bpm=oo で記述
 	{
 		
@@ -223,17 +257,19 @@ public class NoteMaster : MonoBehaviour
 	}
 
 	// Start is called before the first frame update
-	void Start()
+
+	
+	public void MakeNote()
     {
 		judgeText.text = "";
 
-		noteData = SelectMasterKari.noteName;
+		noteData = "Test4simple";
 		score = 0;great = 0; fast = 0;late = 0;miss = 0;
 
 
 		speed = 10;
 
-		fumenAllText = (Resources.Load(noteData, typeof(TextAsset)) as TextAsset).text;//テキストの読み込み
+		fumenAllText = (Resources.Load("noteData/"+noteData, typeof(TextAsset)) as TextAsset).text;//テキストの読み込み
 
 		splitText = fumenAllText.Split(char.Parse("\n"));//テキストを改行ごとに分ける
 		rowLength = fumenAllText.Split('\n').Length;
@@ -285,12 +321,6 @@ public class NoteMaster : MonoBehaviour
 		{
 			noteList[i].noteMove.StartMove();
 		}
-
-		StartCoroutine(TestCoroutine());
-
-		audioSource = gameObject.GetComponent<AudioSource>();
-
-
 	}
 
 	private void JudgeButton()
@@ -370,28 +400,14 @@ public class NoteMaster : MonoBehaviour
 	}
 
 	// Update is called once per frame
-	void Update()
-    {
-		scoreText.text = "Score : " + score.ToString();
-
-		greatText.text = "Great : " + great.ToString();
-		fastText.text = "Fast : " + fast.ToString();
-		lateText.text = "Late : " + late.ToString();
-		missText.text = "Miss : " + miss.ToString();
-
-		JudgeButton();
-
-		if ((Time.time - starttime) > endtime)
-		{
-			starttime = 0;
-			Finish();
-		}
-
-		
-	}
+	
 
 	public void MusicPlay()
 	{
+		Debug.Log("real bar time = " + (Time.time - starttime).ToString());
+		realWait = Time.time - starttime;
+
+		Debug.Log("realWait =" + realWait.ToString());
 		audioSource.PlayOneShot(musicSound);
 	}
 	void Finish()
