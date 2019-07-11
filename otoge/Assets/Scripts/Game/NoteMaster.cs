@@ -305,7 +305,7 @@ public class NoteMaster : MonoBehaviour
 		judgeText.text = " ";
 
 
-		noteData = "Test4simple";
+		noteData = "Test4A";
 		score = 0;great = 0; fast = 0;late = 0;miss = 0;
 
 
