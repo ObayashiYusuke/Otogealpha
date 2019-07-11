@@ -23,7 +23,7 @@ public class Note : MonoBehaviour
 		if(Time.time - NoteMaster.starttime - goodTime > time && NoteMaster.starttime != 0 )
 		{
 			NoteMaster.miss++;
-			Destroy(gameObject);
+			gameObject.SetActive(false);
 		}
 	}
 

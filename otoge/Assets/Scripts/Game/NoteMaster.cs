@@ -7,15 +7,15 @@ using UnityEngine.SceneManagement;
 
 public class NoteMaster : MonoBehaviour
 {
-	public static int score = 0;
-	public static int great = 0;
-	public static int fast = 0;
-	public static int late = 0;
-	public static int miss = 0;
+	[System.NonSerialized]public static int score = 0;
+	[System.NonSerialized] public static int great = 0;
+	[System.NonSerialized] public static int fast = 0;
+	[System.NonSerialized] public static int late = 0;
+	[System.NonSerialized] public static int miss = 0;
 	public float speed = 10;
 	public GameObject Pref;
-	public int inputBuffer=0,inputBufferOld =0;//入力を数値化 oldはまだいらなかった
-	public int buttonnumber = 4;
+	[System.NonSerialized] public int inputPushBuffer = 0;//入力を数値化 oldはまだいらなかった
+	[System.NonSerialized] public int buttonnumber = 4;
 
 	public float greatJudge;
 	public float goodJudge;
@@ -47,7 +47,7 @@ public class NoteMaster : MonoBehaviour
 	public Text resultMissText;
 
 	//音楽情報の取得
-	public AudioClip musicSound;
+	[System.NonSerialized]public AudioClip musicSound;
 	private AudioSource audioSource;
 	private float BPM = 1;
 
@@ -68,7 +68,7 @@ public class NoteMaster : MonoBehaviour
 	GameObject imageObject;
 	Image imageComponent;
 	float realWait = 0;
-	public float nowTime = 0;
+	[System.NonSerialized]public float nowTime = 0;
 
 	private int state = 0;//状態を記録 0:曲選択 1:オブジェクト生成後待機 2:プレイ中(曲再生後) 3:リザルト 
 	private void Start()
@@ -140,6 +140,9 @@ public class NoteMaster : MonoBehaviour
 			score = 0; great = 0; fast = 0; late = 0; miss = 0;
 
 			imageObject.SetActive(false);
+			judgeText.text = "Press Enter\n    To Start!";
+			judgeText.enabled = true;
+			
 		}
 	}
 
@@ -235,7 +238,7 @@ public class NoteMaster : MonoBehaviour
 
 					obj.transform.position = pos;
 
-					size.z = (float)(lineData[l] - '0') - 0.04f;
+					size.z = (float)(lineData[l] - '0') - 0.1f;
 					obj.transform.localScale = size;
 
 					nm = obj.GetComponent<NoteMove>();
@@ -299,7 +302,8 @@ public class NoteMaster : MonoBehaviour
 	
 	public void MakeNote()
     {
-		judgeText.text = "";
+		judgeText.text = " ";
+
 
 		noteData = "Test4simple";
 		score = 0;great = 0; fast = 0;late = 0;miss = 0;
@@ -368,29 +372,28 @@ public class NoteMaster : MonoBehaviour
 		Note note;
 		int sub = 0; 
 
-		inputBuffer = 0;
+		inputPushBuffer = 0;
 		
 		//4ボタン
 		if (Input.GetKeyDown(KeyCode.S))
 		{
-			inputBuffer += 1;
+			inputPushBuffer += 1;
 		}
 
 		if (Input.GetKeyDown(KeyCode.F))
 		{
-			inputBuffer += 2;
+			inputPushBuffer += 2;
 		}
 		if (Input.GetKeyDown(KeyCode.J))
 		{
-			inputBuffer += 4;
+			inputPushBuffer += 4;
 		}
 		if (Input.GetKeyDown(KeyCode.L))
 		{
-			inputBuffer += 8;
+			inputPushBuffer += 8;
 		}
 		
-
-		if (inputBuffer != 0)
+		if (inputPushBuffer != 0)
 		{
 			nowTime = Time.time - starttime - (realWait - barTime);//今の時間を送れた時間分引く
 
@@ -398,11 +401,11 @@ public class NoteMaster : MonoBehaviour
 
 			pushtime += "push time is " + nowTime + "\n";
 		}
-		while (inputBuffer != 0)
+		while (inputPushBuffer != 0)
 		{
 
 			sub = noteList.FindIndex(x => x.time <= nowTime + goodJudge && x.time >= nowTime - goodJudge
-					&& (x.noteType & inputBuffer) != 0);
+					&& (x.noteType & inputPushBuffer) != 0);
 			if (sub != -1)
 			{
 				note = noteList[sub];
@@ -429,12 +432,17 @@ public class NoteMaster : MonoBehaviour
 					late++;
 					judgeText.text = "Late";
 				}
-				inputBuffer = inputBuffer & ~note.noteType;//判定したのノーツの入力部分を0マスク
+				inputPushBuffer = inputPushBuffer & ~note.noteType;//判定したのノーツの入力部分を0マスク
 				Destroy(note.gameObject);//破壊
 				noteList.RemoveAt(sub);//リストから消去
 
 			}
 			else break;//条件に合うノーツがなくなったら脱出
+		}
+
+		if (Input.GetKey(KeyCode.S))
+		{
+
 		}
 	}
 
@@ -451,8 +459,10 @@ public class NoteMaster : MonoBehaviour
 	}
 	void Finish()
 	{
-		audioSource.Stop();
-		imageObject.SetActive(true);
+		audioSource.Stop();//音楽停止
+		imageObject.SetActive(true);//リザルト画像表示
+
+		
 
 		resultGreatText.enabled = true;
 		resultFastText.enabled = true;
@@ -465,6 +475,16 @@ public class NoteMaster : MonoBehaviour
 		fastText.enabled = false;
 		lateText.enabled = false;
 		missText.enabled = false;
+		judgeText.enabled = false;
+
+		for (int i = 0; i < noteList.Count; i++)
+		{
+			if (noteList[i].gameObject != null)
+			{
+				Destroy(noteList[i].gameObject);
+			}
+		}
+		noteList.Clear();
 	}
 
 	string pushtime;
