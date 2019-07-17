@@ -777,7 +777,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4db5db677ce1b514bb52cd00d77545d2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 10
+  speed: 25
   Pref: {fileID: 7674377150795104054, guid: b0206e35eebaad64eab0af3fc9dbe7ce, type: 3}
   greatJudge: 0.04
   goodJudge: 0.1

@@ -309,7 +309,7 @@ public class NoteMaster : MonoBehaviour
 		score = 0;great = 0; fast = 0;late = 0;miss = 0;
 
 
-		speed = 10;
+	
 
 		fumenAllText = (Resources.Load("noteData/"+noteData, typeof(TextAsset)) as TextAsset).text;//テキストの読み込み
 
