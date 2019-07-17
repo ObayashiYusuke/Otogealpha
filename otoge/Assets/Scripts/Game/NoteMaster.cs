@@ -15,7 +15,7 @@ public class NoteMaster : MonoBehaviour
 	public float speed = 10;
 	public GameObject Pref;
 	[System.NonSerialized] public int inputPushBuffer = 0;//入力を数値化 oldはまだいらなかった
-	[System.NonSerialized] public int buttonnumber = 4;
+	[System.NonSerialized] public static int buttonnumber = 4;
 
 	public float greatJudge;
 	public float goodJudge;
@@ -53,7 +53,7 @@ public class NoteMaster : MonoBehaviour
 
 
 	//譜面情報
-	private string noteData;
+	public static string noteData;
 	private float waittime = 0;	//譜面が曲に対して遅れる時間
 	private float barTime;  //1小節の時間
 	private float endtime;  //開始から終了までの時間
@@ -64,18 +64,24 @@ public class NoteMaster : MonoBehaviour
 
 	//譜面情報を取得しておく配列
 	private object[] allNoteData;
-
-	GameObject imageObject;
-	Image imageComponent;
+	//各画像操作用
+	GameObject resultImageObject, selectImageObject;
+	Image imageComponent, resultComponent;
 	float realWait = 0;
 	[System.NonSerialized]public float nowTime = 0;
+	//ボタン操作用
+	private GameObject normalButton, hardButton;
 
-	private int state = 0;//状態を記録 0:曲選択 1:オブジェクト生成後待機 2:プレイ中(曲再生後) 3:リザルト 
+	public static int state = 0;//状態を記録 0:曲選択 1:オブジェクト生成前待機 2:オブジェクト生成後待機 3:プレイ中(曲再生後) 4:リザルト 
 	private void Start()
 	{
-		 imageObject = GameObject.Find("ResultImage");//結果の画像オブジェクトを取得
-		imageComponent = imageObject.GetComponent<Image>();
-		imageObject.SetActive(false);
+		resultImageObject = GameObject.Find("ResultImage");//結果の画像オブジェクトを取得
+		resultImageObject.SetActive(false);
+
+		selectImageObject = GameObject.Find("SelectImage");
+		selectImageObject.SetActive(true);
+
+
 		allNoteData = (Resources.LoadAll("NoteData",typeof(TextAsset)));
 		textAsset = (TextAsset)allNoteData[0];
 		noteData = textAsset.text;
@@ -88,6 +94,8 @@ public class NoteMaster : MonoBehaviour
 		resultScoreText.enabled = false;
 		//Debug.Log("object" + allNoteData[0].ToString());
 		audioSource = gameObject.GetComponent<AudioSource>();
+		normalButton = GameObject.Find("NormalButton");
+		hardButton = GameObject.Find("HardButton");
 	}
 
 	void Update()
@@ -105,24 +113,28 @@ public class NoteMaster : MonoBehaviour
 		resultMissText.text = "Miss : " + miss.ToString();
 		JudgeButton();
 
-		if (state == 0 && Input.GetKeyDown(KeyCode.Return))
+		if(state == 0)
+		{
+
+		}
+		if (state == 1 && Input.GetKeyDown(KeyCode.Return))
 		{//enterが押されたらオブジェクト生成に移行
-			state = 1;
+			state = 2;
 			MakeNote();
 		}
-		else if (state == 1 && Time.time >= (starttime + barTime))
+		else if (state == 2 && Time.time >= (starttime + barTime))
 		{
-			state = 2;
+			state = 3;
 			MusicPlay();
 		}
 
-		else if (state == 2 && (Time.time - starttime) > endtime)
+		else if (state == 3 && (Time.time - starttime) > endtime)
 		{
 			starttime = 0;
-			state = 3;
+			state = 4;
 			Finish();
 		}
-		else if(state == 3 && Input.GetKeyDown(KeyCode.Return))
+		else if(state == 4 && Input.GetKeyDown(KeyCode.Return))
 		{
 			state = 0;
 			resultGreatText.enabled = false;
@@ -131,19 +143,33 @@ public class NoteMaster : MonoBehaviour
 			resultMissText.enabled = false;
 			resultScoreText.enabled = false;
 
-			scoreText.enabled = true;
-			greatText.enabled = true;
-			fastText.enabled = true;
-			lateText.enabled = true;
-			missText.enabled = true;
+			
 
 			score = 0; great = 0; fast = 0; late = 0; miss = 0;
 
-			imageObject.SetActive(false);
+			resultImageObject.SetActive(false);
 			judgeText.text = "Press Enter\n    To Start!";
 			judgeText.enabled = true;
-			
+
+			selectImageObject.SetActive(true);
+
+			normalButton.SetActive(true);
+			hardButton.SetActive(true);
+
 		}
+	}
+
+	public void GoToGame()
+	{
+		selectImageObject.SetActive(false);
+		normalButton.SetActive(false);
+		hardButton.SetActive(false);
+
+		scoreText.enabled = true;
+		greatText.enabled = true;
+		fastText.enabled = true;
+		lateText.enabled = true;
+		missText.enabled = true;
 	}
 
 	public float GetBPM()		//BPMを取得する関数!!!!!!! bpm=oo で記述
@@ -305,7 +331,7 @@ public class NoteMaster : MonoBehaviour
 		judgeText.text = " ";
 
 
-		noteData = "Test4A";
+		//noteData = "Test4A";
 		score = 0;great = 0; fast = 0;late = 0;miss = 0;
 
 
@@ -460,7 +486,7 @@ public class NoteMaster : MonoBehaviour
 	void Finish()
 	{
 		audioSource.Stop();//音楽停止
-		imageObject.SetActive(true);//リザルト画像表示
+		resultImageObject.SetActive(true);//リザルト画像表示
 
 		
 
