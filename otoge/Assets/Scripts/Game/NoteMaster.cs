@@ -12,6 +12,7 @@ public class NoteMaster : MonoBehaviour
 	[System.NonSerialized] public static int fast = 0;
 	[System.NonSerialized] public static int late = 0;
 	[System.NonSerialized] public static int miss = 0;
+	private float achievementRate;
 	public float speed = 10;
 	public GameObject Pref;
 	[System.NonSerialized] public int inputPushBuffer = 0;//入力を数値化 oldはまだいらなかった
@@ -45,6 +46,9 @@ public class NoteMaster : MonoBehaviour
 	public Text resultFastText;
 	public Text resultLateText;
 	public Text resultMissText;
+
+	//進行度表示
+	public Slider timeBar;
 
 	//音楽情報の取得
 	[System.NonSerialized]public AudioClip musicSound;
@@ -92,6 +96,8 @@ public class NoteMaster : MonoBehaviour
 		resultLateText.enabled = false;
 		resultMissText.enabled = false;
 		resultScoreText.enabled = false;
+
+		timeBar.gameObject.SetActive(false);
 		//Debug.Log("object" + allNoteData[0].ToString());
 		audioSource = gameObject.GetComponent<AudioSource>();
 		normalButton = GameObject.Find("NormalButton");
@@ -106,20 +112,25 @@ public class NoteMaster : MonoBehaviour
 		fastText.text = "Fast : " + fast.ToString();
 		lateText.text = "Late : " + late.ToString();
 		missText.text = "Miss : " + miss.ToString();
-		resultScoreText.text = "Score : " + score.ToString();
+		resultScoreText.text = "Score : " + score.ToString() +"/"+ achievementRate.ToString()+"%" ;
 		resultGreatText.text = "Great : " + great.ToString();
 		resultFastText.text = "Fast : " + fast.ToString();
 		resultLateText.text = "Late : " + late.ToString();
 		resultMissText.text = "Miss : " + miss.ToString();
 		JudgeButton();
-
-		if(state == 0)
+		if (state == 3)//timeBar処理
 		{
+			timeBar.value = (Time.time - (starttime + barTime)) / endtime;
+		}
 
+		if (state == 0)
+		{
+			
 		}
 		if (state == 1 && Input.GetKeyDown(KeyCode.Return))
 		{//enterが押されたらオブジェクト生成に移行
 			state = 2;
+			
 			MakeNote();
 		}
 		else if (state == 2 && Time.time >= (starttime + barTime))
@@ -127,14 +138,16 @@ public class NoteMaster : MonoBehaviour
 			state = 3;
 			MusicPlay();
 		}
-
+		
 		else if (state == 3 && (Time.time - starttime) > endtime)
 		{
 			starttime = 0;
 			state = 4;
+			timeBar.value = 0;
+			timeBar.gameObject.SetActive(false);
 			Finish();
 		}
-		else if(state == 4 && Input.GetKeyDown(KeyCode.Return))
+		else if (state == 4 && Input.GetKeyDown(KeyCode.Return))
 		{
 			state = 0;
 			resultGreatText.enabled = false;
@@ -143,7 +156,7 @@ public class NoteMaster : MonoBehaviour
 			resultMissText.enabled = false;
 			resultScoreText.enabled = false;
 
-			
+
 
 			score = 0; great = 0; fast = 0; late = 0; miss = 0;
 
@@ -161,9 +174,12 @@ public class NoteMaster : MonoBehaviour
 
 	public void GoToGame()
 	{
+		
+		state = 1;
 		selectImageObject.SetActive(false);
 		normalButton.SetActive(false);
 		hardButton.SetActive(false);
+		timeBar.gameObject.SetActive(true);
 
 		scoreText.enabled = true;
 		greatText.enabled = true;
@@ -488,7 +504,15 @@ public class NoteMaster : MonoBehaviour
 		audioSource.Stop();//音楽停止
 		resultImageObject.SetActive(true);//リザルト画像表示
 
-		
+		if((great+fast+late+miss) == 0)
+		{
+			achievementRate = 0;
+		}
+		else
+		{
+			achievementRate = score / (great + fast + late + miss);
+		}
+
 
 		resultGreatText.enabled = true;
 		resultFastText.enabled = true;
@@ -503,7 +527,7 @@ public class NoteMaster : MonoBehaviour
 		missText.enabled = false;
 		judgeText.enabled = false;
 
-		for (int i = 0; i < noteList.Count; i++)
+		for (int i = 0; i < noteList.Count; i++)//リストを消去
 		{
 			if (noteList[i].gameObject != null)
 			{

@@ -80,7 +80,7 @@ public class GameMaster : MonoBehaviour
 
 
 	}
-	public MusicData MakeMusicData(string allNoteText)
+	public MusicData MakeMusicData(string allNoteText)//譜面の文字列、タイトル、bpm、プレイ時間
 	{
 		MusicData musicData= new MusicData();//returnするmusicdata
 		string[] splitText;//改行で区切ったデータ
