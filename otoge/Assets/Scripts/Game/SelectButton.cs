@@ -5,6 +5,7 @@ using UnityEngine;
 public class SelectButton : MonoBehaviour
 {
 	public string NoteDataName;
+	public int spd;
 
     public void OnClick()
 	{
@@ -13,6 +14,7 @@ public class SelectButton : MonoBehaviour
 		
 		GameObject master = GameObject.Find("noteMaster");
 		NoteMaster noteMaster = master.GetComponent<NoteMaster>();
+		noteMaster.speed = spd;
 		noteMaster.GoToGame();
 	}
 }

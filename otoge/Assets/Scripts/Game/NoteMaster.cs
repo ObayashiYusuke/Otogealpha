@@ -106,7 +106,10 @@ public class NoteMaster : MonoBehaviour
 
 	void Update()
 	{
-
+		if (Input.GetKey(KeyCode.Escape))
+		{
+			UnityEngine.Application.Quit();
+		}
 		scoreText.text = "Score : " + score.ToString();
 		greatText.text = "Great : " + great.ToString();
 		fastText.text = "Fast : " + fast.ToString();
