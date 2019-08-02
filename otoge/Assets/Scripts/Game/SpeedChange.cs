@@ -2,18 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SelectButton : MonoBehaviour
+public class SpeedChange : MonoBehaviour
 {
-	public string NoteDataName;
-
-
+	public int changeValue;
+    // Start is called before the first frame update
     public void OnClick()
 	{
-		NoteMaster.buttonnumber = 4;
-		NoteMaster.noteData = NoteDataName;
-		
 		GameObject master = GameObject.Find("noteMaster");
 		NoteMaster noteMaster = master.GetComponent<NoteMaster>();
-		noteMaster.GoToGame();
+		noteMaster.speed += (float)changeValue;
 	}
 }

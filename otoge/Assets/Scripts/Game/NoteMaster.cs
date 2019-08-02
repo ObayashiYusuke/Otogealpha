@@ -13,7 +13,7 @@ public class NoteMaster : MonoBehaviour
 	[System.NonSerialized] public static int late = 0;
 	[System.NonSerialized] public static int miss = 0;
 	private float achievementRate;
-	public float speed = 10;
+	public  float speed = 10;
 	public GameObject Pref;
 	[System.NonSerialized] public int inputPushBuffer = 0;//入力を数値化 oldはまだいらなかった
 	[System.NonSerialized] public static int buttonnumber = 4;
@@ -46,6 +46,7 @@ public class NoteMaster : MonoBehaviour
 	public Text resultFastText;
 	public Text resultLateText;
 	public Text resultMissText;
+	public Text speedText;
 
 	//進行度表示
 	public Slider timeBar;
@@ -57,7 +58,8 @@ public class NoteMaster : MonoBehaviour
 
 
 	//譜面情報
-	public static string noteData;
+	public static string musicTitle = "Boss";//"KIKKUNのテーマ";
+	public static string noteData;//譜面データの名前
 	private float waittime = 0;	//譜面が曲に対して遅れる時間
 	private float barTime;  //1小節の時間
 	private float endtime;  //開始から終了までの時間
@@ -74,8 +76,8 @@ public class NoteMaster : MonoBehaviour
 	float realWait = 0;
 	[System.NonSerialized]public float nowTime = 0;
 	//ボタン操作用
-	private GameObject normalButton, hardButton;
-
+	private GameObject basicButton,normalButton, hardButton,veryHardButton,speedUp,speedDown;
+	
 	public static int state = 0;//状態を記録 0:曲選択 1:オブジェクト生成前待機 2:オブジェクト生成後待機 3:プレイ中(曲再生後) 4:リザルト 
 	private void Start()
 	{
@@ -100,8 +102,12 @@ public class NoteMaster : MonoBehaviour
 		timeBar.gameObject.SetActive(false);
 		//Debug.Log("object" + allNoteData[0].ToString());
 		audioSource = gameObject.GetComponent<AudioSource>();
+		basicButton = GameObject.Find("BasicButton");
 		normalButton = GameObject.Find("NormalButton");
+		veryHardButton = GameObject.Find("VeryHardButton");
 		hardButton = GameObject.Find("HardButton");
+		speedUp = GameObject.Find("SpeedUp");
+		speedDown = GameObject.Find("SpeedDown");
 	}
 
 	void Update()
@@ -120,6 +126,8 @@ public class NoteMaster : MonoBehaviour
 		resultFastText.text = "Fast : " + fast.ToString();
 		resultLateText.text = "Late : " + late.ToString();
 		resultMissText.text = "Miss : " + miss.ToString();
+		speedText.text = speed.ToString();
+		
 		JudgeButton();
 		if (state == 3)//timeBar処理
 		{
@@ -130,7 +138,7 @@ public class NoteMaster : MonoBehaviour
 		{
 			
 		}
-		if (state == 1 && Input.GetKeyDown(KeyCode.Return))
+		if ((state == 1) && Input.GetKeyDown(KeyCode.Return))
 		{//enterが押されたらオブジェクト生成に移行
 			state = 2;
 			
@@ -158,7 +166,7 @@ public class NoteMaster : MonoBehaviour
 			resultLateText.enabled = false;
 			resultMissText.enabled = false;
 			resultScoreText.enabled = false;
-
+			speedText.enabled = true;
 
 
 			score = 0; great = 0; fast = 0; late = 0; miss = 0;
@@ -169,20 +177,21 @@ public class NoteMaster : MonoBehaviour
 
 			selectImageObject.SetActive(true);
 
-			normalButton.SetActive(true);
-			hardButton.SetActive(true);
+			ButtonControl(true);
+			
 
 		}
 	}
 
 	public void GoToGame()
 	{
-		
+		Debug.Log("GoToGame");
 		state = 1;
+		ButtonControl(false);
 		selectImageObject.SetActive(false);
-		normalButton.SetActive(false);
-		hardButton.SetActive(false);
+		
 		timeBar.gameObject.SetActive(true);
+		speedText.enabled = false;
 
 		scoreText.enabled = true;
 		greatText.enabled = true;
@@ -356,12 +365,12 @@ public class NoteMaster : MonoBehaviour
 
 	
 
-		fumenAllText = (Resources.Load("noteData/"+noteData, typeof(TextAsset)) as TextAsset).text;//テキストの読み込み
+		fumenAllText = (Resources.Load("NoteData/"+noteData, typeof(TextAsset)) as TextAsset).text;//テキストの読み込み
 
 		splitText = fumenAllText.Split(char.Parse("\n"));//テキストを改行ごとに分ける
 		rowLength = fumenAllText.Split('\n').Length;
 
-		musicSound = (Resources.Load("KIKKUNのテーマ", typeof(AudioClip)) as AudioClip);
+		musicSound = (Resources.Load("MusicData/" + musicTitle, typeof(AudioClip)) as AudioClip);
 
 		//ここから情報取得
 
@@ -389,7 +398,7 @@ public class NoteMaster : MonoBehaviour
 
 		float before = Time.time;
 
-		for (int i = 1; i <= 50; i++)
+		for (int i = 1; i <= 400; i++)
 		{
 			if(i == 1) Debug.Log("real start 1 = " + Time.time);
 
@@ -540,6 +549,16 @@ public class NoteMaster : MonoBehaviour
 		noteList.Clear();
 	}
 
+
+	private void ButtonControl(bool b)
+	{
+		basicButton.SetActive(b);
+		normalButton.SetActive(b);
+		hardButton.SetActive(b);
+		veryHardButton.SetActive(b);
+		speedUp.SetActive(b);
+		speedDown.SetActive(b);
+	}
 	string pushtime;
 	void OnGUI()
 	{
