@@ -555,12 +555,11 @@ public class NoteMaster : MonoBehaviour
 		basicButton.SetActive(b);
 		normalButton.SetActive(b);
 		hardButton.SetActive(b);
-		veryHardButton.SetActive(b);
 		speedUp.SetActive(b);
 		speedDown.SetActive(b);
 	}
 	string pushtime;
-	void OnGUI()
+	/*void OnGUI()
 	{
 		GUI.Label(new Rect(10, 10, 100, 5000), pushtime);
 
@@ -570,6 +569,6 @@ public class NoteMaster : MonoBehaviour
 			notes += "note time = " + noteList[i].time.ToString() + "\n";
 		}
 		GUI.Label(new Rect(150, 10, 1000, 5000), notes);
-	}
+	}*/
 }
 
