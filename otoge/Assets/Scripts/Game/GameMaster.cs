@@ -91,7 +91,7 @@ public class GameMaster : MonoBehaviour
 		splitText = allNoteText.Split(char.Parse("\n"));//譜面データのテキストを改行で区切る
 		rowLength = allNoteText.Split('\n').Length;
 		musicTitle = GetMusicTitle(splitText);
-		musicData.musicTitle = musicTitle;
+		musicData.musicName = musicTitle;
 		bpm = GetBPM(splitText);
 		musicData.BPM = bpm;
 		musicData.noteData = allNoteText;

@@ -9,7 +9,6 @@ public class SpeedChange : MonoBehaviour
     public void OnClick()
 	{
 		GameObject master = GameObject.Find("noteMaster");
-		NoteMaster noteMaster = master.GetComponent<NoteMaster>();
-		noteMaster.speed += (float)changeValue;
+		NoteMaster.speed += (float)changeValue;
 	}
 }

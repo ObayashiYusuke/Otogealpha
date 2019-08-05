@@ -18,13 +18,14 @@ public class NoteMaster : MonoBehaviour
 	[System.NonSerialized] public static int late = 0;
 	[System.NonSerialized] public static int miss = 0;
 	private float achievementRate;
-	public  float speed = 10;
-	public GameObject Pref;
+	public static float speed = 10;
+
+	public GameObject noteMaker;//NoteMakerのオブジェクト
 	[System.NonSerialized] public int inputPushBuffer = 0;//入力を数値化 oldはまだいらなかった
 	[System.NonSerialized] public static int buttonnumber = 4;
 
-	public float greatJudge;
-	public float goodJudge;
+	public static float greatJudge;
+	public static float goodJudge;
 
 	//　読む込むテキストが書き込まれている.txtファイル
 	[SerializeField]
@@ -59,11 +60,11 @@ public class NoteMaster : MonoBehaviour
 
 
 	//譜面情報
-	public static string musicName = "Boss";//"KIKKUNのテーマ";
+	//public static string musicName = "Boss";//"KIKKUNのテーマ";
 	public static string noteDataName;//譜面データの名前
-	private float waittime = 0;	//譜面が曲に対して遅れる時間
-	private float barTime;  //1小節の時間
-	private float endtime;  //開始から終了までの時間
+	//private float waittime = 0;	//譜面が曲に対して遅れる時間
+	//private float barTime;  //1小節の時間
+	//private float endtime;  //開始から終了までの時間
 	public static float starttime = 0;//比較用の開始時刻記録用
 
 	//生成したノーツオブジェクトのリスト
@@ -80,8 +81,12 @@ public class NoteMaster : MonoBehaviour
 	private GameObject basicButton,normalButton, hardButton,veryHardButton,speedUp,speedDown;
 	
 	public static State state = State.select;//状態を記録 0:曲選択 1:オブジェクト生成前待機 2:オブジェクト生成後待機 3:プレイ中(曲再生後) 4:リザルト 
+
+	MusicData musicData;
 	private void Start()
 	{
+		greatJudge = 0.04f;
+		goodJudge = 0.1f;
 		resultImageObject = GameObject.Find("ResultImage");//結果の画像オブジェクトを取得
 		resultImageObject.SetActive(false);
 
@@ -126,10 +131,7 @@ public class NoteMaster : MonoBehaviour
 		speedText.text = speed.ToString();
 		
 		JudgeButton();
-		if (state == State.playing)//timeBar処理
-		{
-			timeBar.value = (Time.time - (starttime + barTime)) / endtime;
-		}
+		
 
 		if (state == State.select)
 		{
@@ -138,16 +140,30 @@ public class NoteMaster : MonoBehaviour
 		if ((state == State.beforeMakeObj) && Input.GetKeyDown(KeyCode.Return))
 		{//enterが押されたらオブジェクト生成に移行
 			state = State.afterMakeObj;
-			
-			MakeNote();
+			score = 0; great = 0; fast = 0; late = 0; miss = 0;
+			musicData = NoteDataParser.NoteDataParse(noteDataName);
+			Debug.Log("adress is MusicData/" + musicData.musicName);
+			Debug.Log(Resources.Load("MusicData/" + musicData.musicName, typeof(AudioClip)));
+			musicSound = (Resources.Load("MusicData/" + musicData.musicName, typeof(AudioClip)) as AudioClip);//曲設定
+			//musicSound = (Resources.Load("MusicData/Boss", typeof(AudioClip)) as AudioClip);
+			noteList = noteMaker.GetComponent<NoteObjMaker>().NoteObjMake(musicData);
+			starttime = Time.time;
+			Debug.Log("starttime = " + starttime);
+			for (int i = 0; i < noteList.Count; i++)
+			{
+				noteList[i].noteMove.StartMove();
+			}
 		}
-		else if (state == State.afterMakeObj && Time.time >= (starttime + barTime))
+		else if (state == State.afterMakeObj && Time.time >= (starttime + (60 / (musicData.BPM / 4))))
 		{
 			state = State.playing;
 			MusicPlay();
 		}
-		
-		else if (state == State.playing && (Time.time - starttime) > endtime)
+		if (state == State.playing)//timeBar処理
+		{
+			timeBar.value = (Time.time - (starttime + (60 / (musicData.BPM / 4)))) /musicData.endTime;//経過時間/endTime
+		}
+		else if (state == State.playing && (Time.time - starttime) > musicData.playTime)
 		{
 			starttime = 0;
 			state = State.result;
@@ -193,11 +209,11 @@ public class NoteMaster : MonoBehaviour
 
 	public void MakeNote()
 	{
-		judgeText.text = " ";
+		/*judgeText.text = " ";
 
 
 		//noteData = "Test4A";
-		score = 0; great = 0; fast = 0; late = 0; miss = 0;
+		
 
 
 
@@ -235,28 +251,20 @@ public class NoteMaster : MonoBehaviour
 
 		float before = Time.time;
 
-		for (int i = 1; i <= 400; i++)
+		for (int i = 1; i <= (rowLength/2); i++)
 		{
 			if (i == 1) Debug.Log("real start 1 = " + Time.time);
 
 			MakeOneBar(i, waittime, i);
 		}
 		Debug.Log("real start ON creefd = " + Time.time);
-
-		starttime = Time.time;
-
-		Debug.Log("生成時間 : " + (starttime - before).ToString());
-
-
-		Debug.Log("real start = " + starttime);
-
-		for (int i = 0; i < noteList.Count; i++)
-		{
-			noteList[i].noteMove.StartMove();
-		}
+		
+		
 		textNum = 0;
+		*/
 	}
 
+	/*
 	public bool MakeOneBar(int skipBar, float wait, int barNumber)
 	{
 		Vector3 pos, size;
@@ -288,9 +296,9 @@ public class NoteMaster : MonoBehaviour
 
 		for (int i = 0; (startline + 1 + i) < textNum; i++)
 		{
-			/*Debug.Log("小節の中の" + (i + 1) + "行目");*/
+			//Debug.Log("小節の中の" + (i + 1) + "行目");
 			lineData = (Regex.Replace(splitText[startline + 1 + i], @"[^0-9A-Z]", ""));
-			/*Debug.Log("lineData is" + lineData);*/
+			//Debug.Log("lineData is" + lineData);
 			for (int l = 0; l < buttonnumber; l++)
 			{
 				if (lineData[l] != '0')
@@ -325,7 +333,7 @@ public class NoteMaster : MonoBehaviour
 		return true;
 
 	}
-
+	*/
 
 	public float GetBPM()		//BPMを取得する関数!!!!!!! bpm=oo で記述
 	{
@@ -443,7 +451,7 @@ public class NoteMaster : MonoBehaviour
 		
 		if (inputPushBuffer != 0)
 		{
-			nowTime = Time.time - starttime - (realWait - barTime);//今の時間を送れた時間分引く
+			nowTime = Time.time - starttime - (realWait - (60 / (musicData.BPM / 4)));//今の時間を送れた時間分引く
 
 			Debug.Log("push time is " + nowTime);
 
