@@ -7,6 +7,11 @@ using UnityEngine.SceneManagement;
 
 public class NoteMaster : MonoBehaviour
 {
+	public enum State
+	{
+		select,beforeMakeObj,afterMakeObj,playing,result
+	}
+
 	[System.NonSerialized]public static int score = 0;
 	[System.NonSerialized] public static int great = 0;
 	[System.NonSerialized] public static int fast = 0;
@@ -35,11 +40,7 @@ public class NoteMaster : MonoBehaviour
 	private int rowLength;
 
 	//スコア表示
-	public Text scoreText;
-	public Text greatText;
-	public Text fastText;
-	public Text lateText;
-	public Text missText;
+
 	public Text judgeText;
 	public Text resultScoreText;
 	public Text resultGreatText;
@@ -78,7 +79,7 @@ public class NoteMaster : MonoBehaviour
 	//ボタン操作用
 	private GameObject basicButton,normalButton, hardButton,veryHardButton,speedUp,speedDown;
 	
-	public static int state = 0;//状態を記録 0:曲選択 1:オブジェクト生成前待機 2:オブジェクト生成後待機 3:プレイ中(曲再生後) 4:リザルト 
+	public static State state = State.select;//状態を記録 0:曲選択 1:オブジェクト生成前待機 2:オブジェクト生成後待機 3:プレイ中(曲再生後) 4:リザルト 
 	private void Start()
 	{
 		resultImageObject = GameObject.Find("ResultImage");//結果の画像オブジェクトを取得
@@ -116,11 +117,7 @@ public class NoteMaster : MonoBehaviour
 		{
 			UnityEngine.Application.Quit();
 		}
-		scoreText.text = "Score : " + score.ToString();
-		greatText.text = "Great : " + great.ToString();
-		fastText.text = "Fast : " + fast.ToString();
-		lateText.text = "Late : " + late.ToString();
-		missText.text = "Miss : " + miss.ToString();
+		
 		resultScoreText.text = "Score : " + score.ToString() +"/"+ achievementRate.ToString()+"%" ;
 		resultGreatText.text = "Great : " + great.ToString();
 		resultFastText.text = "Fast : " + fast.ToString();
@@ -129,38 +126,38 @@ public class NoteMaster : MonoBehaviour
 		speedText.text = speed.ToString();
 		
 		JudgeButton();
-		if (state == 3)//timeBar処理
+		if (state == State.playing)//timeBar処理
 		{
 			timeBar.value = (Time.time - (starttime + barTime)) / endtime;
 		}
 
-		if (state == 0)
+		if (state == State.select)
 		{
 			
 		}
-		if ((state == 1) && Input.GetKeyDown(KeyCode.Return))
+		if ((state == State.beforeMakeObj) && Input.GetKeyDown(KeyCode.Return))
 		{//enterが押されたらオブジェクト生成に移行
-			state = 2;
+			state = State.afterMakeObj;
 			
 			MakeNote();
 		}
-		else if (state == 2 && Time.time >= (starttime + barTime))
+		else if (state == State.afterMakeObj && Time.time >= (starttime + barTime))
 		{
-			state = 3;
+			state = State.playing;
 			MusicPlay();
 		}
 		
-		else if (state == 3 && (Time.time - starttime) > endtime)
+		else if (state == State.playing && (Time.time - starttime) > endtime)
 		{
 			starttime = 0;
-			state = 4;
+			state = State.result;
 			timeBar.value = 0;
 			timeBar.gameObject.SetActive(false);
 			Finish();
 		}
-		else if (state == 4 && Input.GetKeyDown(KeyCode.Return))
+		else if (state == State.result && Input.GetKeyDown(KeyCode.Return))
 		{
-			state = 0;
+			state = State.select;
 			resultGreatText.enabled = false;
 			resultFastText.enabled = false;
 			resultLateText.enabled = false;
@@ -186,19 +183,149 @@ public class NoteMaster : MonoBehaviour
 	public void GoToGame()
 	{
 		Debug.Log("GoToGame");
-		state = 1;
+		state = State.beforeMakeObj;
 		ButtonControl(false);
 		selectImageObject.SetActive(false);
 		
 		timeBar.gameObject.SetActive(true);
 		speedText.enabled = false;
-
-		scoreText.enabled = true;
-		greatText.enabled = true;
-		fastText.enabled = true;
-		lateText.enabled = true;
-		missText.enabled = true;
 	}
+
+	public void MakeNote()
+	{
+		judgeText.text = " ";
+
+
+		//noteData = "Test4A";
+		score = 0; great = 0; fast = 0; late = 0; miss = 0;
+
+
+
+
+		fumenAllText = (Resources.Load("NoteData/" + noteDataName, typeof(TextAsset)) as TextAsset).text;//テキストの読み込み
+
+		splitText = fumenAllText.Split(char.Parse("\n"));//テキストを改行ごとに分ける
+		rowLength = fumenAllText.Split('\n').Length;
+
+		musicSound = (Resources.Load("MusicData/" + musicName, typeof(AudioClip)) as AudioClip);
+
+		//ここから情報取得
+
+		BPM = GetBPM();
+
+		if (BPM <= 0)
+		{
+			Debug.Log("BPM is not found.");
+			BPM = 1;
+		}
+		else if (BPM > 0)
+		{
+			BPM = float.Parse(Regex.Replace(splitText[textNum], @"[bpm=]", ""));
+			Debug.Log("BPM IS " + BPM);
+		}
+		barTime = 60 / (BPM / 4);
+		Debug.Log("barTime is" + barTime);
+
+		waittime = GetWaittime();
+		Debug.Log("waittime is " + waittime);
+
+		endtime = GetEndtime();
+		Debug.Log("endtime is " + endtime);
+
+
+		float before = Time.time;
+
+		for (int i = 1; i <= 400; i++)
+		{
+			if (i == 1) Debug.Log("real start 1 = " + Time.time);
+
+			MakeOneBar(i, waittime, i);
+		}
+		Debug.Log("real start ON creefd = " + Time.time);
+
+		starttime = Time.time;
+
+		Debug.Log("生成時間 : " + (starttime - before).ToString());
+
+
+		Debug.Log("real start = " + starttime);
+
+		for (int i = 0; i < noteList.Count; i++)
+		{
+			noteList[i].noteMove.StartMove();
+		}
+		textNum = 0;
+	}
+
+	public bool MakeOneBar(int skipBar, float wait, int barNumber)
+	{
+		Vector3 pos, size;
+		pos.y = 0;
+		size.x = 0.3f;
+		size.y = 1;
+
+		Note n;
+		NoteMove nm;
+		string lineData;//各行のデータを入れる
+		GameObject obj;
+
+		if (SearchWord("--") == false)
+		{
+			return false;
+		}
+		int startline = textNum;
+		//Debug.Log("startline is " + startline);
+
+		textNum++;
+
+		if (SearchWord("--") == false)
+		{
+			return false;
+		}
+		//Debug.Log("textNum is " + textNum);
+
+		float interval = barTime / (textNum - startline - 1);//(textNum - startline - 1)は行の数
+
+		for (int i = 0; (startline + 1 + i) < textNum; i++)
+		{
+			/*Debug.Log("小節の中の" + (i + 1) + "行目");*/
+			lineData = (Regex.Replace(splitText[startline + 1 + i], @"[^0-9A-Z]", ""));
+			/*Debug.Log("lineData is" + lineData);*/
+			for (int l = 0; l < buttonnumber; l++)
+			{
+				if (lineData[l] != '0')
+				{
+					obj = Instantiate(Pref);
+					pos.x = (7 - (skipBar * barTime * speed) - (i * interval * speed) - (wait * speed));
+
+					Debug.Log("pos.x = " + pos.x);
+
+					pos.z = (float)(lineData[l] - '1') / 2 + l;
+
+					obj.transform.position = pos;
+
+					size.z = (float)(lineData[l] - '0') - 0.1f;
+					obj.transform.localScale = size;
+
+					nm = obj.GetComponent<NoteMove>();
+					nm.SetSpeed(speed);
+					n = obj.GetComponent<Note>();
+					n.noteType = GetNoteType(l, lineData[l] - '0');
+					n.noteMove = nm;
+					n.time = waittime + (barNumber * barTime) + (i * interval);
+					n.SetGoodTime(goodJudge + 0.1f);
+					//Debug.Log("time is " + n.time);
+
+					noteList.Add(n);
+
+				}
+			}
+		}
+
+		return true;
+
+	}
+
 
 	public float GetBPM()		//BPMを取得する関数!!!!!!! bpm=oo で記述
 	{
@@ -244,75 +371,7 @@ public class NoteMaster : MonoBehaviour
 
 
 
-	public bool MakeOneBar(int skipBar, float wait, int barNumber)
-	{
-		Vector3 pos,size;
-		pos.y = 0;
-		size.x = 0.3f;
-		size.y = 1;
-
-		Note n;
-		NoteMove nm;
-		string lineData;//各行のデータを入れる
-		GameObject obj;
-
-		if(SearchWord("--") == false)
-		{
-			return false;
-		}
-		int startline = textNum;
-		//Debug.Log("startline is " + startline);
-
-		textNum++;
-
-		if (SearchWord("--") == false)
-		{
-			return false;
-		}
-		//Debug.Log("textNum is " + textNum);
-
-		float interval = barTime / (textNum - startline - 1);//(textNum - startline - 1)は行の数
-
-		for (int i = 0; (startline + 1 + i ) < textNum; i++)
-		{
-			/*Debug.Log("小節の中の" + (i + 1) + "行目");*/
-			lineData = (Regex.Replace(splitText[startline + 1 + i], @"[^0-9A-Z]",""));
-			/*Debug.Log("lineData is" + lineData);*/
-			for(int l = 0;l < buttonnumber; l++)
-			{
-				if (lineData[l] != '0')
-				{
-					obj = Instantiate(Pref);
-					pos.x = (7 - (skipBar * barTime * speed) - (i * interval * speed) - (wait * speed));
-
-					Debug.Log("pos.x = " + pos.x);
-
-					pos.z = (float)(lineData[l] - '1') / 2 + l;
-
-					obj.transform.position = pos;
-
-					size.z = (float)(lineData[l] - '0') - 0.1f;
-					obj.transform.localScale = size;
-
-					nm = obj.GetComponent<NoteMove>();
-					nm.SetSpeed(speed);
-					n = obj.GetComponent<Note>();
-					n.noteType = GetNoteType(l, lineData[l] - '0');
-					n.noteMove = nm;
-					n.time = waittime + (barNumber * barTime) + (i * interval);
-					n.SetGoodTime(goodJudge + 0.1f);
-					//Debug.Log("time is " + n.time);
-
-					noteList.Add(n);
-
-				}
-			}
-		}
-
-		return true;
-
-	}
-
+	
 	public int GetNoteType(int left, int size)
 	{
 		int a = 0;
@@ -353,71 +412,7 @@ public class NoteMaster : MonoBehaviour
 	// Start is called before the first frame update
 
 	
-	public void MakeNote()
-    {
-		judgeText.text = " ";
-
-
-		//noteData = "Test4A";
-		score = 0;great = 0; fast = 0;late = 0;miss = 0;
-
-
 	
-
-		fumenAllText = (Resources.Load("NoteData/"+noteDataName, typeof(TextAsset)) as TextAsset).text;//テキストの読み込み
-
-		splitText = fumenAllText.Split(char.Parse("\n"));//テキストを改行ごとに分ける
-		rowLength = fumenAllText.Split('\n').Length;
-
-		musicSound = (Resources.Load("MusicData/" + musicName, typeof(AudioClip)) as AudioClip);
-
-		//ここから情報取得
-
-		BPM = GetBPM();
-
-		if (BPM <= 0)
-		{
-			Debug.Log("BPM is not found.");
-			BPM = 1;
-		}
-		else if (BPM > 0)
-		{
-			BPM = float.Parse(Regex.Replace(splitText[textNum], @"[bpm=]", ""));
-			Debug.Log("BPM IS " + BPM);
-		}
-		barTime = 60 / (BPM / 4);
-		Debug.Log("barTime is" + barTime);
-
-		waittime = GetWaittime();
-		Debug.Log("waittime is " + waittime);
-
-		endtime = GetEndtime();
-		Debug.Log("endtime is " + endtime);
-
-
-		float before = Time.time;
-
-		for (int i = 1; i <= 400; i++)
-		{
-			if(i == 1) Debug.Log("real start 1 = " + Time.time);
-
-			MakeOneBar(i, waittime, i);
-		}
-		Debug.Log("real start ON creefd = " + Time.time);
-
-		starttime = Time.time;
-
-		Debug.Log("生成時間 : " + (starttime - before).ToString());
-
-
-		Debug.Log("real start = " + starttime);
-
-		for (int i = 0; i < noteList.Count; i++)
-		{
-			noteList[i].noteMove.StartMove();
-		}
-		textNum = 0;
-	}
 
 	private void JudgeButton()
 	{
@@ -493,10 +488,6 @@ public class NoteMaster : MonoBehaviour
 			else break;//条件に合うノーツがなくなったら脱出
 		}
 
-		if (Input.GetKey(KeyCode.S))
-		{
-
-		}
 	}
 
 	// Update is called once per frame
@@ -531,11 +522,6 @@ public class NoteMaster : MonoBehaviour
 		resultMissText.enabled = true;
 		resultScoreText.enabled = true;
 
-		scoreText.enabled = false;
-		greatText.enabled = false;
-		fastText.enabled = false;
-		lateText.enabled = false;
-		missText.enabled = false;
 		judgeText.enabled = false;
 
 		for (int i = 0; i < noteList.Count; i++)//リストを消去
