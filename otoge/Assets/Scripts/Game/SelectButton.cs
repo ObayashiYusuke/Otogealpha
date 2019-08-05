@@ -4,13 +4,13 @@ using UnityEngine;
 
 public class SelectButton : MonoBehaviour
 {
-	public string NoteDataName;
+	public string noteDataName;
 
 
     public void OnClick()
 	{
 		NoteMaster.buttonnumber = 4;
-		NoteMaster.noteDataName = NoteDataName;
+		NoteMaster.noteDataName = noteDataName;
 		
 		GameObject master = GameObject.Find("noteMaster");
 		NoteMaster noteMaster = master.GetComponent<NoteMaster>();
