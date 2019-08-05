@@ -143,9 +143,10 @@ public class NoteMaster : MonoBehaviour
 			score = 0; great = 0; fast = 0; late = 0; miss = 0;
 			musicData = NoteDataParser.NoteDataParse(noteDataName);
 			Debug.Log("adress is MusicData/" + musicData.musicName);
-			Debug.Log(Resources.Load("MusicData/" + musicData.musicName, typeof(AudioClip)));
+			Debug.Log      (Resources.Load("MusicData/" + musicData.musicName, typeof(AudioClip)));
 			musicSound = (Resources.Load("MusicData/" + musicData.musicName, typeof(AudioClip)) as AudioClip);//曲設定
-			//musicSound = (Resources.Load("MusicData/Boss", typeof(AudioClip)) as AudioClip);
+			Debug.Log(musicData.musicName.Contains("\r"));
+			//musicSound = (Resources.Load("MusicData/Boss",                 typeof(AudioClip)) as AudioClip);
 			noteList = noteMaker.GetComponent<NoteObjMaker>().NoteObjMake(musicData);
 			starttime = Time.time;
 			Debug.Log("starttime = " + starttime);
@@ -159,11 +160,8 @@ public class NoteMaster : MonoBehaviour
 			state = State.playing;
 			MusicPlay();
 		}
-		if (state == State.playing)//timeBar処理
-		{
-			timeBar.value = (Time.time - (starttime + (60 / (musicData.BPM / 4)))) /musicData.endTime;//経過時間/endTime
-		}
-		else if (state == State.playing && (Time.time - starttime) > musicData.playTime)
+		
+		else if (state == State.playing && (Time.time - (starttime + (60 / (musicData.BPM / 4)))) > musicData.playTime)
 		{
 			starttime = 0;
 			state = State.result;
@@ -193,6 +191,10 @@ public class NoteMaster : MonoBehaviour
 			ButtonControl(true);
 			
 
+		}
+		if (state == State.playing)//timeBar処理
+		{
+			timeBar.value = (Time.time - (starttime + (60 / (musicData.BPM / 4)))) / musicData.endTime;//経過時間/endTime
 		}
 	}
 
@@ -335,89 +337,18 @@ public class NoteMaster : MonoBehaviour
 	}
 	*/
 
-	public float GetBPM()		//BPMを取得する関数!!!!!!! bpm=oo で記述
-	{
-		
-		if (SearchWord("bpm=") == false)
-		{
-			return -1;
-		}
-		if (splitText[textNum].Split('.').Length > 2)//小数点が2個以上ある場合を例外処理
-		{
-			return -1;
-		}
-		return float.Parse(Regex.Replace(splitText[textNum], @"[^0-9.]", ""));//BPMをフロート型にして返す
+	
 
-	}
-
-	public float GetWaittime()		//譜面再生までの時間を取得 waittime=oo で記述
-	{
-		if(SearchWord("waittime=") == false)
-		{
-			return 0;
-		}
-		if (splitText[textNum].Split('.').Length > 2)//小数点が2個以上ある場合を例外処理
-		{
-			return 0;
-		}
-		return float.Parse(Regex.Replace(splitText[textNum], @"[^0-9.]", ""));//waittimeをフロート型にして返す
-	}
-
-	public float GetEndtime()	//開始から終了までの時間を取得する関数 endtime=ooで記述
-	{
-		if (SearchWord("endtime=") == false)
-		{
-			return 0;
-		}
-		if (splitText[textNum].Split('.').Length > 2)//小数点が2個以上ある場合を例外処理
-		{
-			return 0;
-		}
-		return float.Parse(Regex.Replace(splitText[textNum], @"[^0-9.]", ""));//endtimeをフロート型にして返す
-
-	}
-
+	
+	
 
 
 	
-	public int GetNoteType(int left, int size)
-	{
-		int a = 0;
-		for (int i = 1; size >= i; i++)
-		{
-			a = (a * 2) + 1;
-		}
-		for(int i = 1; left >= i; i++)
-		{
-			a *= 2;
-		}
-		return a;
-	}
 
 
-	public bool SearchWord(string str)
-		/*文字列を検索し、最初のその文字列が見つかるまでtextNumを進める
-		 見つかればtrue,見つからなければfalse*/
-	{
-		int rowfrom = textNum;
-		if (textNum >= rowLength)//見つからず最後の行まで行ったら失敗
-		{
-			return false;
-		}
-		while (Regex.IsMatch(splitText[textNum], str) == false)
-		{
-			textNum++;
-			if (textNum >= rowLength)//見つからず最後の行まで行ったら失敗
-			{
-				
-				textNum = rowfrom;
-				return false;
-			}
-		}
-		return true;
-	}
 
-	// Start is called before the first frame update
+
+
 
 	
 	

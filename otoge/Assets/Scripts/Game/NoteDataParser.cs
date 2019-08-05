@@ -93,7 +93,8 @@ public class NoteDataParser
 		{
 			return null;
 		}
-		return Regex.Replace(splitText[rowNum], "musicname=", "");//musicNameを返す
+		string rmr = Regex.Replace(splitText[rowNum], "\r", "");
+		return Regex.Replace(rmr, "musicname=", "");//musicNameを返す
 
 	}
 
