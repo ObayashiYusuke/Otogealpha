@@ -58,8 +58,8 @@ public class NoteMaster : MonoBehaviour
 
 
 	//譜面情報
-	public static string musicTitle = "Boss";//"KIKKUNのテーマ";
-	public static string noteData;//譜面データの名前
+	public static string musicName = "Boss";//"KIKKUNのテーマ";
+	public static string noteDataName;//譜面データの名前
 	private float waittime = 0;	//譜面が曲に対して遅れる時間
 	private float barTime;  //1小節の時間
 	private float endtime;  //開始から終了までの時間
@@ -90,8 +90,8 @@ public class NoteMaster : MonoBehaviour
 
 		allNoteData = (Resources.LoadAll("NoteData",typeof(TextAsset)));
 		textAsset = (TextAsset)allNoteData[0];
-		noteData = textAsset.text;
-		Debug.Log("data: " + noteData);
+		noteDataName = textAsset.text;
+		Debug.Log("data: " + noteDataName);
 
 		resultGreatText.enabled = false;
 		resultFastText.enabled = false;
@@ -226,7 +226,6 @@ public class NoteMaster : MonoBehaviour
 			return 0;
 		}
 		return float.Parse(Regex.Replace(splitText[textNum], @"[^0-9.]", ""));//waittimeをフロート型にして返す
-
 	}
 
 	public float GetEndtime()	//開始から終了までの時間を取得する関数 endtime=ooで記述
@@ -365,12 +364,12 @@ public class NoteMaster : MonoBehaviour
 
 	
 
-		fumenAllText = (Resources.Load("NoteData/"+noteData, typeof(TextAsset)) as TextAsset).text;//テキストの読み込み
+		fumenAllText = (Resources.Load("NoteData/"+noteDataName, typeof(TextAsset)) as TextAsset).text;//テキストの読み込み
 
 		splitText = fumenAllText.Split(char.Parse("\n"));//テキストを改行ごとに分ける
 		rowLength = fumenAllText.Split('\n').Length;
 
-		musicSound = (Resources.Load("MusicData/" + musicTitle, typeof(AudioClip)) as AudioClip);
+		musicSound = (Resources.Load("MusicData/" + musicName, typeof(AudioClip)) as AudioClip);
 
 		//ここから情報取得
 
