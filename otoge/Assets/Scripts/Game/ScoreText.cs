@@ -31,9 +31,13 @@ public class ScoreText : MonoBehaviour
 			scoreText.enabled = false;
 		}
 		 
-        if(type == ScoreType.score)
+        if(type == ScoreType.score && indicationState == NoteMaster.State.playing)
 		{
 			scoreText.text = "Score : " + NoteMaster.score.ToString(); 
+		}
+		else if(type == ScoreType.score)
+		{
+			scoreText.text = "Score : " + NoteMaster.score.ToString() + "/" + NoteMaster.achievementRate.ToString() + "%";
 		}
 		else if (type == ScoreType.great)
 		{

@@ -17,7 +17,7 @@ public class NoteMaster : MonoBehaviour
 	[System.NonSerialized] public static int fast = 0;
 	[System.NonSerialized] public static int late = 0;
 	[System.NonSerialized] public static int miss = 0;
-	private float achievementRate;
+	public static float achievementRate;
 	public static float speed = 10;
 
 	public GameObject noteMaker;//NoteMakerのオブジェクト
@@ -43,11 +43,7 @@ public class NoteMaster : MonoBehaviour
 	//スコア表示
 
 	public Text judgeText;
-	public Text resultScoreText;
-	public Text resultGreatText;
-	public Text resultFastText;
-	public Text resultLateText;
-	public Text resultMissText;
+
 	public Text speedText;
 
 	//進行度表示
@@ -85,8 +81,8 @@ public class NoteMaster : MonoBehaviour
 	MusicData musicData;
 	private void Start()
 	{
-		greatJudge = 0.04f;
-		goodJudge = 0.1f;
+		greatJudge = 0.04f;					//Greatの時間幅
+		goodJudge = 0.1f;					//Goodの時間幅(実際には倍となる)
 		resultImageObject = GameObject.Find("ResultImage");//結果の画像オブジェクトを取得
 		resultImageObject.SetActive(false);
 
@@ -113,16 +109,12 @@ public class NoteMaster : MonoBehaviour
 
 	void Update()
 	{
-		if (Input.GetKey(KeyCode.Escape))
+		if (Input.GetKey(KeyCode.Escape))//強制終了
 		{
 			UnityEngine.Application.Quit();
 		}
 		
-		resultScoreText.text = "Score : " + score.ToString() +"/"+ achievementRate.ToString()+"%" ;
-		resultGreatText.text = "Great : " + great.ToString();
-		resultFastText.text = "Fast : " + fast.ToString();
-		resultLateText.text = "Late : " + late.ToString();
-		resultMissText.text = "Miss : " + miss.ToString();
+		
 		speedText.text = speed.ToString();
 		
 		JudgeButton();
