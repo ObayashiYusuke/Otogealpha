@@ -17,9 +17,12 @@ public class NoteObjMaker : MonoBehaviour
 		splitText = musicData.noteData.Split(char.Parse("\n"));//テキストを改行ごとに分ける
 		rowLength = musicData.noteData.Split('\n').Length;
 		barTime = 60 / (musicData.BPM / 4);
+
+		rowNum = 0;
+
 		for (int i = 1; i <= (rowLength / 2); i++)
 		{
-			Debug.Log(i + "行目生成");
+			Debug.Log(i + "小節目生成");
 			if (i == 1) Debug.Log("real start 1 = " + Time.time);
 
 			MakeOneBar(i, musicData.waitTime, i,musicData);
@@ -59,7 +62,7 @@ public class NoteObjMaker : MonoBehaviour
 		{
 			/*Debug.Log("小節の中の" + (i + 1) + "行目");*/
 			lineData = (Regex.Replace(splitText[startline + 1 + i], @"[^0-9A-Z]", ""));
-			/*Debug.Log("lineData is" + lineData);*/
+			Debug.Log("lineData is" + lineData);
 			for (int l = 0; l < musicData.buttonNum; l++)
 			{
 				if (lineData[l] != '0')

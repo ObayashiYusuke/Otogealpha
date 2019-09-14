@@ -12,7 +12,7 @@ public class ScoreText : MonoBehaviour
 
 	// Start is called before the first frame update
 
-
+	public NoteMaster.State indicationState;
 	public ScoreType type;
 	private Text scoreText;
 	private void Start()
@@ -22,7 +22,7 @@ public class ScoreText : MonoBehaviour
 	// Update is called once per frame
 	void Update()
     {
-		if(NoteMaster.state == NoteMaster.State.playing)
+		if(NoteMaster.state == indicationState)
 		{
 			scoreText.enabled = true;
 		}

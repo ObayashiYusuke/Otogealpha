@@ -17,6 +17,7 @@ public class NoteDataParser
 		int rowLength;//データ全体の行数
 		MusicData musicData = new MusicData();
 		noteData = (Resources.Load("NoteData/" + noteDataName, typeof(TextAsset)) as TextAsset).text;//テキストの読み込み
+
 		splitText = noteData.Split(char.Parse("\n"));//テキストを改行ごとに分ける
 		rowLength = noteData.Split('\n').Length;
 		BPM = GetBPM(splitText,rowLength);
