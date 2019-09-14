@@ -128,13 +128,12 @@ public class NoteMaster : MonoBehaviour
 		{//enterが押されたらオブジェクト生成に移行
 			state = State.afterMakeObj;
 			score = 0; great = 0; fast = 0; late = 0; miss = 0;
-			musicData = NoteDataParser.NoteDataParse(noteDataName);
+			musicData = NoteDataParser.NoteDataParse(noteDataName);//譜面の名前から譜面のデータをMusicData型に解析
 			Debug.Log("adress is MusicData/" + musicData.musicName);
 			Debug.Log      (Resources.Load("MusicData/" + musicData.musicName, typeof(AudioClip)));
-			musicSound = (Resources.Load("MusicData/" + musicData.musicName, typeof(AudioClip)) as AudioClip);//曲設定
+			musicSound = (Resources.Load("MusicData/" + musicData.musicName, typeof(AudioClip)) as AudioClip);//解析したMusicData型のデータから曲の名前を抽出し曲設定
 			Debug.Log(musicData.musicName.Contains("\r"));
-			//musicSound = (Resources.Load("MusicData/Boss",                 typeof(AudioClip)) as AudioClip);
-			noteList = noteMaker.GetComponent<NoteObjMaker>().NoteObjMake(musicData);
+			noteList = noteMaker.GetComponent<NoteObjMaker>().NoteObjMake(musicData);//MusicData型のデータから譜面を生成させ、そのオブジェクトのリストを受け取る
 			starttime = Time.time;
 			Debug.Log("starttime = " + starttime);
 			for (int i = 0; i < noteList.Count; i++)
@@ -142,7 +141,7 @@ public class NoteMaster : MonoBehaviour
 				noteList[i].noteMove.StartMove();
 			}
 		}
-		else if (state == State.afterMakeObj && Time.time >= (starttime + (60 / (musicData.BPM / 4))))
+		else if (state == State.afterMakeObj && Time.time >= (starttime + (60 / (musicData.BPM / 4))))//1小節分の時間がたったら
 		{
 			state = State.playing;
 			MusicPlay();
@@ -150,11 +149,18 @@ public class NoteMaster : MonoBehaviour
 		
 		else if (state == State.playing && (Time.time - (starttime + (60 / (musicData.BPM / 4)))) > musicData.playTime)
 		{
-			starttime = 0;
 			state = State.result;
+			starttime = 0;
 			timeBar.value = 0;
 			timeBar.gameObject.SetActive(false);
-			Finish();
+			audioSource.Stop();//音楽停止
+			resultImageObject.SetActive(true);//リザルト画像表示
+
+			CalcAchievementRate();//achievementrateを算出
+
+			judgeText.enabled = false;
+
+			DestroyList();//リストの消去
 		}
 		else if (state == State.result && Input.GetKeyDown(KeyCode.Return))
 		{
@@ -170,7 +176,7 @@ public class NoteMaster : MonoBehaviour
 
 			selectImageObject.SetActive(true);
 
-			ButtonControl(true);
+			ButtonControl(true);//全てのボタンを表示
 			
 
 		}
@@ -228,7 +234,6 @@ public class NoteMaster : MonoBehaviour
 
 			Debug.Log("push time is " + nowTime);
 
-			pushtime += "push time is " + nowTime + "\n";
 		}
 		while (inputPushBuffer != 0)
 		{
@@ -282,12 +287,10 @@ public class NoteMaster : MonoBehaviour
 		Debug.Log("realWait =" + realWait.ToString());
 		audioSource.PlayOneShot(musicSound);
 	}
-	void Finish()
-	{
-		audioSource.Stop();//音楽停止
-		resultImageObject.SetActive(true);//リザルト画像表示
 
-		if((great+fast+late+miss) == 0)
+	void CalcAchievementRate()
+	{
+		if ((great + fast + late + miss) == 0)
 		{
 			achievementRate = 0;
 		}
@@ -295,9 +298,9 @@ public class NoteMaster : MonoBehaviour
 		{
 			achievementRate = score / (great + fast + late + miss);
 		}
-
-		judgeText.enabled = false;
-
+	}
+	void DestroyList()
+	{
 		for (int i = 0; i < noteList.Count; i++)//リストを消去
 		{
 			if (noteList[i].gameObject != null)
@@ -317,8 +320,8 @@ public class NoteMaster : MonoBehaviour
 		speedUp.SetActive(b);
 		speedDown.SetActive(b);
 	}
-	string pushtime;
-	/*void OnGUI()
+	/*string pushtime;
+	void OnGUI()
 	{
 		GUI.Label(new Rect(10, 10, 100, 5000), pushtime);
 
