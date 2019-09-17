@@ -84,8 +84,7 @@ public class NoteObjMaker : MonoBehaviour
 					n = obj.GetComponent<Note>();
 					n.noteType = GetNoteType(l, lineData[l] - '0');
 					n.noteMove = nm;
-					n.time = musicData.waitTime + (barNumber * barTime) + (i * interval);
-					n.SetGoodTime(NoteMaster.goodJudge + 0.1f);
+					n.justTime = musicData.waitTime + (barNumber * barTime) + (i * interval);
 					noteList.Add(n);
 
 				}

@@ -61,13 +61,12 @@ public class NoteMaster : MonoBehaviour
 	//private float waittime = 0;	//譜面が曲に対して遅れる時間
 	//private float barTime;  //1小節の時間
 	//private float endtime;  //開始から終了までの時間
-	public static float starttime = 0;//比較用の開始時刻記録用
+	public static float noteMakeTime = 0;//比較用の開始時刻記録用
 
 	//生成したノーツオブジェクトのリスト
 	List<Note> noteList = new List<Note>();
 
-	//譜面情報を取得しておく配列
-	private object[] allNoteData;
+
 	//各画像操作用
 	GameObject resultImageObject, selectImageObject;
 	Image imageComponent, resultComponent;
@@ -90,10 +89,7 @@ public class NoteMaster : MonoBehaviour
 		selectImageObject.SetActive(true);
 
 
-		allNoteData = (Resources.LoadAll("NoteData",typeof(TextAsset)));
-		textAsset = (TextAsset)allNoteData[0];
-		noteDataName = textAsset.text;
-		Debug.Log("data: " + noteDataName);
+	
 
 
 		timeBar.gameObject.SetActive(false);
@@ -134,23 +130,23 @@ public class NoteMaster : MonoBehaviour
 			musicSound = (Resources.Load("MusicData/" + musicData.musicName, typeof(AudioClip)) as AudioClip);//解析したMusicData型のデータから曲の名前を抽出し曲設定
 			Debug.Log(musicData.musicName.Contains("\r"));
 			noteList = noteMaker.GetComponent<NoteObjMaker>().NoteObjMake(musicData);//MusicData型のデータから譜面を生成させ、そのオブジェクトのリストを受け取る
-			starttime = Time.time;
-			Debug.Log("starttime = " + starttime);
+			noteMakeTime = Time.time;
+			Debug.Log("noteMakeTime = " + noteMakeTime);
 			for (int i = 0; i < noteList.Count; i++)
 			{
 				noteList[i].noteMove.StartMove();
 			}
 		}
-		else if (state == State.afterMakeObj && Time.time >= (starttime + (60 / (musicData.BPM / 4))))//1小節分の時間がたったら
+		else if (state == State.afterMakeObj && Time.time >= (noteMakeTime + (60 / (musicData.BPM / 4))))//1小節分の時間がたったら
 		{
 			state = State.playing;
 			MusicPlay();
 		}
 		
-		else if (state == State.playing && (Time.time - (starttime + (60 / (musicData.BPM / 4)))) > musicData.playTime)
+		else if (state == State.playing && (Time.time - (noteMakeTime + (60 / (musicData.BPM / 4)))) > musicData.playTime)
 		{
 			state = State.result;
-			starttime = 0;
+			noteMakeTime = 0;
 			timeBar.value = 0;
 			timeBar.gameObject.SetActive(false);
 			audioSource.Stop();//音楽停止
@@ -182,7 +178,8 @@ public class NoteMaster : MonoBehaviour
 		}
 		if (state == State.playing)//timeBar処理
 		{
-			timeBar.value = (Time.time - (starttime + (60 / (musicData.BPM / 4)))) / musicData.endTime;//経過時間/endTime
+			timeBar.value = (Time.time - (noteMakeTime + (60 / (musicData.BPM / 4)))) / musicData.endTime;//経過時間/endTime
+			MissJudge();
 		}
 	}
 
@@ -230,7 +227,7 @@ public class NoteMaster : MonoBehaviour
 		
 		if (inputPushBuffer != 0)
 		{
-			nowTime = Time.time - starttime - (realWait - (60 / (musicData.BPM / 4)));//今の時間を送れた時間分引く
+			nowTime = Time.time - noteMakeTime - (realWait - (60 / (musicData.BPM / 4)));//今の時間を送れた時間分引く
 
 			Debug.Log("push time is " + nowTime);
 
@@ -238,21 +235,21 @@ public class NoteMaster : MonoBehaviour
 		while (inputPushBuffer != 0)
 		{
 
-			sub = noteList.FindIndex(x => x.time <= nowTime + goodJudge && x.time >= nowTime - goodJudge
+			sub = noteList.FindIndex(x => x.justTime <= nowTime + goodJudge && x.justTime >= nowTime - goodJudge
 					&& (x.noteType & inputPushBuffer) != 0);
 			if (sub != -1)
 			{
 				note = noteList[sub];
-				Debug.Log("note.time is " + note.time);
+				Debug.Log("note.time is " + note.justTime);
 
-				if (note.time <= nowTime + greatJudge && note.time >= nowTime - greatJudge)
+				if (note.justTime <= nowTime + greatJudge && note.justTime >= nowTime - greatJudge)
 				{
 					score += 100;
 					Debug.Log("GREAT");
 					great++;
 					judgeText.text = "Great";
 				}
-				else if (note.time > nowTime)
+				else if (note.justTime > nowTime)
 				{
 					score += 50;
 					Debug.Log("FAST");
@@ -276,13 +273,30 @@ public class NoteMaster : MonoBehaviour
 
 	}
 
-	// Update is called once per frame
+	public void MissJudge()
+	{
+		int i;
+		for(i = noteList.Count - 1;i >= 0; i--)
+		{
+			if(noteList[i].justTime + goodJudge + noteMakeTime + (realWait - (60 / (musicData.BPM / 4))) < Time.time)
+			{
+				break;
+			}
+		}
+		for(;i>=0;i--)
+		{
+			Destroy(noteList[i].gameObject);
+			noteList.RemoveAt(i);
+			miss++;
+			judgeText.text = "Miss";
+		}
+	} 
 	
 
 	public void MusicPlay()
 	{
-		Debug.Log("real bar time = " + (Time.time - starttime).ToString());
-		realWait = Time.time - starttime;
+		Debug.Log("real bar time = " + (Time.time - noteMakeTime).ToString());
+		realWait = Time.time - noteMakeTime;
 
 		Debug.Log("realWait =" + realWait.ToString());
 		audioSource.PlayOneShot(musicSound);
