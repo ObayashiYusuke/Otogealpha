@@ -21,7 +21,7 @@ public class NoteMaster : MonoBehaviour
 	public static float speed = 10;
 
 	public GameObject noteMaker;//NoteMakerのオブジェクト
-	[System.NonSerialized] public int inputPushBuffer = 0;//入力を数値化 oldはまだいらなかった
+	[System.NonSerialized] public int inputPushBuffer = 0;//入力を数値化 
 	[System.NonSerialized] public static int buttonnumber = 4;
 
 	public static float greatJudge;
@@ -64,20 +64,20 @@ public class NoteMaster : MonoBehaviour
 	public static float noteMakeTime = 0;//比較用の開始時刻記録用
 
 	//生成したノーツオブジェクトのリスト
-	List<Note> noteList = new List<Note>();
+	public static List<Note> noteList = new List<Note>();
 
 
 	//各画像操作用
 	GameObject resultImageObject, selectImageObject;
 	Image imageComponent, resultComponent;
-	float realWait = 0;
+	public static float realWait = 0;
 	[System.NonSerialized]public float nowTime = 0;
 	//ボタン操作用
 	private GameObject basicButton,normalButton, hardButton,veryHardButton,speedUp,speedDown;
 	
 	public static State state = State.select;//状態を記録 0:曲選択 1:オブジェクト生成前待機 2:オブジェクト生成後待機 3:プレイ中(曲再生後) 4:リザルト 
 
-	MusicData musicData;
+	public static MusicData musicData;
 	private void Start()
 	{
 		greatJudge = 0.04f;					//Greatの時間幅
@@ -124,6 +124,9 @@ public class NoteMaster : MonoBehaviour
 		{//enterが押されたらオブジェクト生成に移行
 			state = State.afterMakeObj;
 			score = 0; great = 0; fast = 0; late = 0; miss = 0;
+
+			judgeText.text = "";
+
 			musicData = NoteDataParser.NoteDataParse(noteDataName);//譜面の名前から譜面のデータをMusicData型に解析
 			Debug.Log("adress is MusicData/" + musicData.musicName);
 			Debug.Log      (Resources.Load("MusicData/" + musicData.musicName, typeof(AudioClip)));
