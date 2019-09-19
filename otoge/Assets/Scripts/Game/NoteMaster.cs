@@ -113,7 +113,6 @@ public class NoteMaster : MonoBehaviour
 		
 		speedText.text = speed.ToString();
 		
-		JudgeButton();
 		
 
 		if (state == State.select)
@@ -201,7 +200,7 @@ public class NoteMaster : MonoBehaviour
 
 	
 
-	private void JudgeButton()
+	/*private void JudgeButton()
 	{
 		//Debug.Log(noteList[0].transform.position);
 		Note note;
@@ -274,7 +273,7 @@ public class NoteMaster : MonoBehaviour
 			else break;//条件に合うノーツがなくなったら脱出
 		}
 
-	}
+	}*/
 
 	public void MissJudge()
 	{
@@ -336,6 +335,10 @@ public class NoteMaster : MonoBehaviour
 		hardButton.SetActive(b);
 		speedUp.SetActive(b);
 		speedDown.SetActive(b);
+	}
+	public  void JudgeTextRewrite(string str)
+	{
+		judgeText.text = str;
 	}
 	/*string pushtime;
 	void OnGUI()

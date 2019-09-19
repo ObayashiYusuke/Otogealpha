@@ -6,12 +6,23 @@ using System.Text.RegularExpressions;
 public class NoteObjMaker : MonoBehaviour
 {
 	public GameObject Pref;
+	public GameObject leftLine;
+	public GameObject rightLine;
 	private string[] splitText; 
 	private int rowLength;
 	private int rowNum;
 	private float barTime;
 	private List<Note> noteList = new List<Note>();
+	private float width,left,right;
 	// Start is called before the first frame update
+
+	void Start()
+	{
+		left = leftLine.transform.position.z;
+		right = rightLine.transform.position.z;
+		width = right - left;
+		Debug.Log("幅は" + width);
+	}
 	public List<Note> NoteObjMake(MusicData musicData)
 	{
 		splitText = musicData.noteData.Split(char.Parse("\n"));//テキストを改行ごとに分ける
@@ -22,7 +33,6 @@ public class NoteObjMaker : MonoBehaviour
 
 		for (int i = 1; i <= (rowLength / 2); i++)
 		{
-			Debug.Log(i + "小節目生成");
 			if (i == 1) Debug.Log("real start 1 = " + Time.time);
 
 			MakeOneBar(i, musicData.waitTime, i,musicData);
@@ -58,6 +68,8 @@ public class NoteObjMaker : MonoBehaviour
 
 		float interval = barTime / (rowNum - startline - 1);//(textNum - startline - 1)は行の数
 
+		float laneWidth = width / musicData.buttonNum;
+
 		for (int i = 0; (startline + 1 + i) < rowNum; i++)
 		{
 			/*Debug.Log("小節の中の" + (i + 1) + "行目");*/
@@ -72,11 +84,11 @@ public class NoteObjMaker : MonoBehaviour
 
 					Debug.Log("pos.x = " + pos.x);
 
-					pos.z = (float)(lineData[l] - '1') / 2 + l;
+					pos.z = (float)(lineData[l] - '1') / 2 * laneWidth + left +( l + 0.5f)* laneWidth;
 
 					obj.transform.position = pos;
 
-					size.z = (float)(lineData[l] - '0') - 0.1f;
+					size.z = (float)(lineData[l] - '0')*laneWidth - 0.1f;
 					obj.transform.localScale = size;
 
 					nm = obj.GetComponent<NoteMove>();
