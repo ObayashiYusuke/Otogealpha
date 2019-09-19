@@ -102,6 +102,29 @@ public class InPutPosToNotes : MonoBehaviour
 		}
 
 	}
+
+	public void TouchInputCheck()
+	{
+		Touch touchPos2;
+		Vector3 touchPos3;
+		int count = Input.touchCount;
+		if(count > 0)
+		{
+			for(int i = 0; i < count; i++)
+			{
+				touchPos2 = Input.GetTouch(i);
+				if (touchPos2.phase == TouchPhase.Began)
+				{
+					touchPos3.x = touchPos2.position.x;
+					touchPos3.y = touchPos2.position.y;
+					touchPos3.z = 0f;
+					worldPos = Camera.main.ScreenToWorldPoint(touchPos3 + Camera.main.transform.forward);
+					InputJudge(worldPos.z);
+				}
+			}
+			
+		}
+	}
 	public void InputJudge(float inputPos)
 	{
 		for (int i = 0; i < NoteMaster.noteList.Count; i++)
