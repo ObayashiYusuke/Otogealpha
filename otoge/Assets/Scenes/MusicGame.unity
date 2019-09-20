@@ -379,7 +379,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c1c4083cfdf84c34cb1bbe45bfb4d120, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  changeValue: 1
+  changeValue: 2
 --- !u!114 &234365795
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -710,7 +710,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c1c4083cfdf84c34cb1bbe45bfb4d120, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  changeValue: -1
+  changeValue: -2
 --- !u!114 &272788992
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3158,10 +3158,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e0a3e79c2b11ab24794a30f201673ee5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  textAsset: {fileID: 4900000, guid: b587947a3460ff946b0291c96a9acce9, type: 3}
-  loadText2: 
-  splitText2: []
-  textNum2: 0
 --- !u!65 &1029361208
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -4527,8 +4523,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6d6b3d8ca372bdc44955eb8151dbcee7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  musicSound: {fileID: 8300000, guid: 334945e13ec8d6340b5b8563afa3f73d, type: 3}
-  audioSource: {fileID: 0}
 --- !u!1 &1659057878
 GameObject:
   m_ObjectHideFlags: 0
