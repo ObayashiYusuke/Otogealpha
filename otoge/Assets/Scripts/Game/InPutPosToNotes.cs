@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class InPutPosToNotes : MonoBehaviour
+public class InputPosToNotes : MonoBehaviour
 {
 	public const int KeyNum = 12;
 
@@ -93,7 +93,6 @@ public class InPutPosToNotes : MonoBehaviour
 		}
 		if (Input.GetKeyDown(KeyCode.BackQuote))
 		{
-			Debug.Log("@入力");
 			InputJudge(left + (11 - 0.5f) * width / KeyNum);
 		}
 		if (Input.GetKeyDown(KeyCode.LeftBracket))

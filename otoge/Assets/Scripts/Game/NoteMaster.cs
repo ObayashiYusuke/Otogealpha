@@ -56,11 +56,8 @@ public class NoteMaster : MonoBehaviour
 
 
 	//譜面情報
-	//public static string musicName = "Boss";//"KIKKUNのテーマ";
+
 	public static string noteDataName;//譜面データの名前
-	//private float waittime = 0;	//譜面が曲に対して遅れる時間
-	//private float barTime;  //1小節の時間
-	//private float endtime;  //開始から終了までの時間
 	public static float noteMakeTime = 0;//比較用の開始時刻記録用
 
 	//生成したノーツオブジェクトのリスト
@@ -130,7 +127,6 @@ public class NoteMaster : MonoBehaviour
 			Debug.Log("adress is MusicData/" + musicData.musicName);
 			Debug.Log      (Resources.Load("MusicData/" + musicData.musicName, typeof(AudioClip)));
 			musicSound = (Resources.Load("MusicData/" + musicData.musicName, typeof(AudioClip)) as AudioClip);//解析したMusicData型のデータから曲の名前を抽出し曲設定
-			Debug.Log(musicData.musicName.Contains("\r"));
 			noteList = noteMaker.GetComponent<NoteObjMaker>().NoteObjMake(musicData);//MusicData型のデータから譜面を生成させ、そのオブジェクトのリストを受け取る
 			noteMakeTime = Time.time;
 			Debug.Log("noteMakeTime = " + noteMakeTime);
@@ -196,84 +192,18 @@ public class NoteMaster : MonoBehaviour
 		speedText.enabled = false;
 	}
 
-
-
-	
-
-	/*private void JudgeButton()
+	public void MusicPlay()
 	{
-		//Debug.Log(noteList[0].transform.position);
-		Note note;
-		int sub = 0; 
+		Debug.Log("real bar time = " + (Time.time - noteMakeTime).ToString());
+		realWait = Time.time - noteMakeTime;
 
-		inputPushBuffer = 0;
-		
-		//4ボタン
-		if (Input.GetKeyDown(KeyCode.S))
-		{
-			inputPushBuffer += 1;
-		}
+		Debug.Log("realWait =" + realWait.ToString());
+		audioSource.PlayOneShot(musicSound);
+	}
 
-		if (Input.GetKeyDown(KeyCode.F))
-		{
-			inputPushBuffer += 2;
-		}
-		if (Input.GetKeyDown(KeyCode.J))
-		{
-			inputPushBuffer += 4;
-		}
-		if (Input.GetKeyDown(KeyCode.L))
-		{
-			inputPushBuffer += 8;
-		}
-		
-		if (inputPushBuffer != 0)
-		{
-			nowTime = Time.time - noteMakeTime - (realWait - (60 / (musicData.BPM / 4)));//今の時間を送れた時間分引く
 
-			Debug.Log("push time is " + nowTime);
 
-		}
-		while (inputPushBuffer != 0)
-		{
 
-			sub = noteList.FindIndex(x => x.justTime <= nowTime + goodJudge && x.justTime >= nowTime - goodJudge
-					&& (x.noteType & inputPushBuffer) != 0);
-			if (sub != -1)
-			{
-				note = noteList[sub];
-				Debug.Log("note.time is " + note.justTime);
-
-				if (note.justTime <= nowTime + greatJudge && note.justTime >= nowTime - greatJudge)
-				{
-					score += 100;
-					Debug.Log("GREAT");
-					great++;
-					judgeText.text = "Great";
-				}
-				else if (note.justTime > nowTime)
-				{
-					score += 50;
-					Debug.Log("FAST");
-					fast++;
-					judgeText.text = "Fast";
-				}
-				else
-				{
-					score += 50;
-					Debug.Log("LATE");
-					late++;
-					judgeText.text = "Late";
-				}
-				inputPushBuffer = inputPushBuffer & ~note.noteType;//判定したのノーツの入力部分を0マスク
-				Destroy(note.gameObject);//破壊
-				noteList.RemoveAt(sub);//リストから消去
-
-			}
-			else break;//条件に合うノーツがなくなったら脱出
-		}
-
-	}*/
 
 	public void MissJudge()
 	{
@@ -295,15 +225,7 @@ public class NoteMaster : MonoBehaviour
 	} 
 	
 
-	public void MusicPlay()
-	{
-		Debug.Log("real bar time = " + (Time.time - noteMakeTime).ToString());
-		realWait = Time.time - noteMakeTime;
-
-		Debug.Log("realWait =" + realWait.ToString());
-		audioSource.PlayOneShot(musicSound);
-	}
-
+	
 	void CalcAchievementRate()
 	{
 		if ((great + fast + late + miss) == 0)

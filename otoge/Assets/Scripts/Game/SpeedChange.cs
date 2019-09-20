@@ -8,7 +8,6 @@ public class SpeedChange : MonoBehaviour
     // Start is called before the first frame update
     public void OnClick()
 	{
-		GameObject master = GameObject.Find("noteMaster");
 		NoteMaster.speed += (float)changeValue;
 	}
 }
