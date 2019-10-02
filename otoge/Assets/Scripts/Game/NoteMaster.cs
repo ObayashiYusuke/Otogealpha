@@ -141,7 +141,7 @@ public class NoteMaster : MonoBehaviour
 			MusicPlay();
 		}
 		
-		else if (state == State.playing && (Time.time - (noteMakeTime + (60 / (musicData.BPM / 4)))) > musicData.playTime)
+		else if (state == State.playing && (Time.time - (noteMakeTime + (60 / (musicData.BPM / 4)))) > musicData.endTime)
 		{
 			state = State.result;
 			noteMakeTime = 0;
