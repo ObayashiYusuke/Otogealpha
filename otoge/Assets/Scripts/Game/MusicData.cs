@@ -5,7 +5,7 @@ using UnityEngine;
 public class MusicData
 {
 
-	public string noteData;//譜面の文字列データ
+	
 	public string musicName;//曲のファイル名
 	public float BPM;
 	public float waitTime;//曲の再生と同時に生成されるオブジェクトを遅らせる時間
@@ -15,5 +15,6 @@ public class MusicData
 }
 public class ObaMusicData : MusicData
 {
+	public string noteData;//譜面の文字列データ
 	public int splitLane;
 }
