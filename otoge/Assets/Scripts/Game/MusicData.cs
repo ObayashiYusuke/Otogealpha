@@ -10,7 +10,10 @@ public class MusicData
 	public float BPM;
 	public float waitTime;//曲の再生と同時に生成されるオブジェクトを遅らせる時間
 	public float endTime;//曲開始から終了までの時間
-	public int buttonNum;
-
+	public List<Note> noteList;
     
+}
+public class ObaMusicData : MusicData
+{
+	public int splitLane;
 }

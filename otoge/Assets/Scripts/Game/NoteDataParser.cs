@@ -36,8 +36,8 @@ public class NoteDataParser
 		musicData.endTime = endTime;
 		Debug.Log("musicData.endTime=" + musicData.endTime);
 
-		musicData.buttonNum = buttonNumber;
-		Debug.Log("musicData.buttonNum=" + musicData.buttonNum);
+		/*musicData. = buttonNumber;
+		Debug.Log("musicData.buttonNum=" + musicData.buttonNum);*/
 
 		return musicData;
 	}

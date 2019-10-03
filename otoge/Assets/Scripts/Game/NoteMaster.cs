@@ -61,7 +61,6 @@ public class NoteMaster : MonoBehaviour
 	public static float noteMakeTime = 0;//比較用の開始時刻記録用
 
 	//生成したノーツオブジェクトのリスト
-	public static List<Note> noteList = new List<Note>();
 
 
 	//各画像操作用
@@ -123,17 +122,16 @@ public class NoteMaster : MonoBehaviour
 
 			judgeText.text = "";
 
-			musicData = NoteDataParser.NoteDataParse(noteDataName);//譜面の名前から譜面のデータをMusicData型に解析
-			Debug.Log("adress is MusicData/" + musicData.musicName);
-			Debug.Log      (Resources.Load("MusicData/" + musicData.musicName, typeof(AudioClip)));
+			
+			musicData = noteMaker.GetComponent<NoteObjMaker>().NoteDataParse(noteDataName);//譜面データのファイル名からMusicData型に変換してもらう
 			musicSound = (Resources.Load("MusicData/" + musicData.musicName, typeof(AudioClip)) as AudioClip);//解析したMusicData型のデータから曲の名前を抽出し曲設定
-			noteList = noteMaker.GetComponent<NoteObjMaker>().NoteObjMake(musicData);//MusicData型のデータから譜面を生成させ、そのオブジェクトのリストを受け取る
+
+			Debug.Log("adress is MusicData/" + musicData.musicName);
+			Debug.Log(Resources.Load("MusicData/" + musicData.musicName, typeof(AudioClip)));
+
 			noteMakeTime = Time.time;
 			Debug.Log("noteMakeTime = " + noteMakeTime);
-			for (int i = 0; i < noteList.Count; i++)
-			{
-				noteList[i].noteMove.StartMove();
-			}
+			
 		}
 		else if (state == State.afterMakeObj && Time.time >= (noteMakeTime + (60 / (musicData.BPM / 4))))//1小節分の時間がたったら
 		{
@@ -208,17 +206,17 @@ public class NoteMaster : MonoBehaviour
 	public void MissJudge()
 	{
 		int i;
-		for(i = noteList.Count - 1;i >= 0; i--)
+		for(i = musicData.noteList.Count - 1;i >= 0; i--)
 		{
-			if(noteList[i].justTime + goodJudge + noteMakeTime + (realWait - (60 / (musicData.BPM / 4))) < Time.time)
+			if(musicData.noteList[i].justTime + goodJudge + noteMakeTime + (realWait - (60 / (musicData.BPM / 4))) < Time.time)
 			{
 				break;
 			}
 		}
 		for(;i>=0;i--)
 		{
-			Destroy(noteList[i].gameObject);
-			noteList.RemoveAt(i);
+			Destroy(musicData.noteList[i].gameObject);
+			musicData.noteList.RemoveAt(i);
 			miss++;
 			judgeText.text = "Miss";
 		}
@@ -239,14 +237,14 @@ public class NoteMaster : MonoBehaviour
 	}
 	void DestroyList()
 	{
-		for (int i = 0; i < noteList.Count; i++)//リストを消去
+		for (int i = 0; i < musicData.noteList.Count; i++)//リストを消去
 		{
-			if (noteList[i].gameObject != null)
+			if (musicData.noteList[i].gameObject != null)
 			{
-				Destroy(noteList[i].gameObject);
+				Destroy(musicData.noteList[i].gameObject);
 			}
 		}
-		noteList.Clear();
+		musicData.noteList.Clear();
 	}
 
 

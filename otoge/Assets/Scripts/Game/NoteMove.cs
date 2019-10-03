@@ -6,7 +6,7 @@ public class NoteMove : MonoBehaviour
 {
 
 	private float dx;
-	private bool move = false;
+	private bool move = true;
 
 	// Start is called before the first frame update
 

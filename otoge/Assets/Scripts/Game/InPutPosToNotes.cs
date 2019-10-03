@@ -126,37 +126,37 @@ public class InputPosToNotes : MonoBehaviour
 	}
 	public void InputJudge(float inputPos)
 	{
-		for (int i = 0; i < NoteMaster.noteList.Count; i++)
+		for (int i = 0; i < NoteMaster.musicData.noteList.Count; i++)
 		{
-			Vector3 pos = NoteMaster.noteList[i].gameObject.transform.position;
-			Vector3 size = NoteMaster.noteList[i].gameObject.transform.localScale;
+			Vector3 pos = NoteMaster.musicData.noteList[i].gameObject.transform.position;
+			Vector3 size = NoteMaster.musicData.noteList[i].gameObject.transform.localScale;
 			if (judgeLine.transform.position.x - getLength < pos.x && pos.x < judgeLine.transform.position.x + getLength)//縦幅
 			{
 				if (pos.z + (size.z / 2) > inputPos && inputPos > pos.z - (size.z / 2))
 				{
-					if (NoteMaster.noteList[i].justTime + NoteMaster.greatJudge > nowTime && nowTime > NoteMaster.noteList[i].justTime - NoteMaster.greatJudge)
+					if (NoteMaster.musicData.noteList[i].justTime + NoteMaster.greatJudge > nowTime && nowTime > NoteMaster.musicData.noteList[i].justTime - NoteMaster.greatJudge)
 					{
 						NoteMaster.great++;
 						NoteMaster.score += 100;
 						noteMaster.JudgeTextRewrite("GREAT");
-						Destroy(NoteMaster.noteList[i].gameObject);
-						NoteMaster.noteList.RemoveAt(i);
+						Destroy(NoteMaster.musicData.noteList[i].gameObject);
+						NoteMaster.musicData.noteList.RemoveAt(i);
 					}
-					else if (NoteMaster.noteList[i].justTime + NoteMaster.goodJudge > nowTime && nowTime > NoteMaster.noteList[i].justTime)
+					else if (NoteMaster.musicData.noteList[i].justTime + NoteMaster.goodJudge > nowTime && nowTime > NoteMaster.musicData.noteList[i].justTime)
 					{
 						NoteMaster.late++;
 						NoteMaster.score += 50;
 						noteMaster.JudgeTextRewrite("LATE");
-						Destroy(NoteMaster.noteList[i].gameObject);
-						NoteMaster.noteList.RemoveAt(i);
+						Destroy(NoteMaster.musicData.noteList[i].gameObject);
+						NoteMaster.musicData.noteList.RemoveAt(i);
 					}
-					else if (NoteMaster.noteList[i].justTime > nowTime && nowTime > NoteMaster.noteList[i].justTime - NoteMaster.goodJudge)
+					else if (NoteMaster.musicData.noteList[i].justTime > nowTime && nowTime > NoteMaster.musicData.noteList[i].justTime - NoteMaster.goodJudge)
 					{
 						NoteMaster.fast++;
 						NoteMaster.score += 50;
 						noteMaster.JudgeTextRewrite("FAST");
-						Destroy(NoteMaster.noteList[i].gameObject);
-						NoteMaster.noteList.RemoveAt(i);
+						Destroy(NoteMaster.musicData.noteList[i].gameObject);
+						NoteMaster.musicData.noteList.RemoveAt(i);
 					}
 
 				}
