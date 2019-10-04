@@ -3336,7 +3336,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 41a797e58c32c174390bd52ca4ed5ca4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dx: 10
 --- !u!114 &1034225570
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3563,8 +3562,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c9bce3e89e0eda340a3e84a33043e8d0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  randNoteMaster: {fileID: 0}
-  inputBuffer: 0
 --- !u!1 &1145773265
 GameObject:
   m_ObjectHideFlags: 0
@@ -4960,11 +4957,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a7c0e32bf18a7e4458872e1d587836c5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Pref: {fileID: 2213116594609770049, guid: 91fd2e73fc3fd3544a74ac191f9337d5, type: 3}
-  life: 8
-  score: 0
-  scoreText: {fileID: 1945752367}
-  lifeText: {fileID: 143709742}
 --- !u!4 &2023627422
 Transform:
   m_ObjectHideFlags: 0
@@ -5120,23 +5112,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d69ae4e0cbc91b4484131ba6336d19b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  scoreText: {fileID: 377567035}
-  greatText: {fileID: 977131161}
-  fastText: {fileID: 1436133922}
-  lateText: {fileID: 590248937}
-  missText: {fileID: 2072813861}
-  judgeText: {fileID: 656779612}
-  resultScoreText: {fileID: 254246055}
-  resultGreatText: {fileID: 362106085}
-  resultFastText: {fileID: 965694913}
-  resultLateText: {fileID: 1174118500}
-  resultMissText: {fileID: 1450762109}
-  noteMasterObj: {fileID: 637250328}
-  button: {fileID: 0}
-  prefab: {fileID: 7197165049823486028, guid: b4d1d8385ba838341b6e488876102750, type: 3}
-  obj1: {fileID: 0}
-  parentObject: {fileID: 0}
-  state: 0
 --- !u!1 &2054697487
 GameObject:
   m_ObjectHideFlags: 0
