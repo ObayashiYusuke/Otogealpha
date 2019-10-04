@@ -34,7 +34,7 @@ public class InputPosToNotes : MonoBehaviour
 			nowTime = Time.time - NoteMaster.noteMakeTime - (NoteMaster.realWait - (60 / (NoteMaster.musicData.BPM / 4)));//今の時間を送れた時間分引く
 			MouseInputCheck();
 			KeyInputCheck();
-
+			TouchInputCheck();
 
 		}
     }

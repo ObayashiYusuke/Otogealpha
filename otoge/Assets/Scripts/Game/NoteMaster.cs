@@ -156,7 +156,7 @@ public class NoteMaster : MonoBehaviour
 
 			DestroyList();//リストの消去
 		}
-		else if (state == State.result && Input.GetKeyDown(KeyCode.Return))
+		else if (state == State.result)
 		{
 			if (Input.GetKeyDown(KeyCode.Return) || TouchCheck())
 			{
