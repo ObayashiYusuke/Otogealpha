@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using System.Text.RegularExpressions;
 using UnityEngine.SceneManagement;
 
+
 public class NoteMaster : MonoBehaviour
 {
 	public enum State
