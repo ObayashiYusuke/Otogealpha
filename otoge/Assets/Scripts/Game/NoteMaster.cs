@@ -115,23 +115,25 @@ public class NoteMaster : MonoBehaviour
 		{
 			
 		}
-		if ((state == State.beforeMakeObj) && Input.GetKeyDown(KeyCode.Return))
+		if ((state == State.beforeMakeObj))
 		{//enterが押されたらオブジェクト生成に移行
-			state = State.afterMakeObj;
-			score = 0; great = 0; fast = 0; late = 0; miss = 0;
+			if (Input.GetKeyDown(KeyCode.Return) || TouchCheck())
+			{
+				state = State.afterMakeObj;
+				score = 0; great = 0; fast = 0; late = 0; miss = 0;
 
-			judgeText.text = "";
+				judgeText.text = "";
 
-			
-			musicData = noteMaker.GetComponent<NoteObjMaker>().NoteDataParse(noteDataName);//譜面データのファイル名からMusicData型に変換してもらう
-			musicSound = (Resources.Load("MusicData/" + musicData.musicName, typeof(AudioClip)) as AudioClip);//解析したMusicData型のデータから曲の名前を抽出し曲設定
 
-			Debug.Log("adress is MusicData/" + musicData.musicName);
-			Debug.Log(Resources.Load("MusicData/" + musicData.musicName, typeof(AudioClip)));
+				musicData = noteMaker.GetComponent<NoteObjMaker>().NoteDataParse(noteDataName);//譜面データのファイル名からMusicData型に変換してもらう
+				musicSound = (Resources.Load("MusicData/" + musicData.musicName, typeof(AudioClip)) as AudioClip);//解析したMusicData型のデータから曲の名前を抽出し曲設定
 
-			noteMakeTime = Time.time;
-			Debug.Log("noteMakeTime = " + noteMakeTime);
-			
+				Debug.Log("adress is MusicData/" + musicData.musicName);
+				Debug.Log(Resources.Load("MusicData/" + musicData.musicName, typeof(AudioClip)));
+
+				noteMakeTime = Time.time;
+				Debug.Log("noteMakeTime = " + noteMakeTime);
+			}
 		}
 		else if (state == State.afterMakeObj && Time.time >= (noteMakeTime + (60 / (musicData.BPM / 4))))//1小節分の時間がたったら
 		{
@@ -156,21 +158,23 @@ public class NoteMaster : MonoBehaviour
 		}
 		else if (state == State.result && Input.GetKeyDown(KeyCode.Return))
 		{
-			state = State.select;
-			speedText.enabled = true;
+			if (Input.GetKeyDown(KeyCode.Return) || TouchCheck())
+			{
+				state = State.select;
+				speedText.enabled = true;
 
 
-			score = 0; great = 0; fast = 0; late = 0; miss = 0;
+				score = 0; great = 0; fast = 0; late = 0; miss = 0;
 
-			resultImageObject.SetActive(false);
-			judgeText.text = "Press Enter\n    To Start!";
-			judgeText.enabled = true;
+				resultImageObject.SetActive(false);
+				judgeText.text = "Press Enter\n    To Start!";
+				judgeText.enabled = true;
 
-			selectImageObject.SetActive(true);
+				selectImageObject.SetActive(true);
 
-			ButtonControl(true);//全てのボタンを表示
-			
+				ButtonControl(true);//全てのボタンを表示
 
+			}
 		}
 		if (state == State.playing)//timeBar処理
 		{
@@ -188,6 +192,26 @@ public class NoteMaster : MonoBehaviour
 		
 		timeBar.gameObject.SetActive(true);
 		speedText.enabled = false;
+	}
+
+	public bool TouchCheck()
+	{
+		if (Input.touchCount > 0)
+		{
+			Touch touch = Input.GetTouch(0);
+			if(touch.phase == TouchPhase.Began)
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+		else
+		{
+			return false;
+		}
 	}
 
 	public void MusicPlay()
