@@ -136,7 +136,7 @@ public class NoteMaster : MonoBehaviour
 				Debug.Log("noteMakeTime = " + noteMakeTime);
 			}
 		}
-		else if (state == State.afterMakeObj && Time.time >= (noteMakeTime + (60 / (musicData.BPM / 4))))//1小節分の時間がたったら
+		else if (state == State.afterMakeObj && Time.time >= (noteMakeTime + (60 / (musicData.BPM / 4))))//生成してから1小節分の時間がたったら
 		{
 			state = State.playing;
 			MusicPlay();

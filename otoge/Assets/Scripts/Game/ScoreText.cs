@@ -12,8 +12,8 @@ public class ScoreText : MonoBehaviour
 
 	// Start is called before the first frame update
 
-	public NoteMaster.State indicationState;
-	public ScoreType type;
+	public NoteMaster.State indicationState;//どの状態のとき表示するか
+	public ScoreType type;//どの中身を表示するか
 	private Text scoreText;
 	private void Start()
 	{
