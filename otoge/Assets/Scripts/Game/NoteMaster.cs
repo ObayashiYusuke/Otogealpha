@@ -61,8 +61,6 @@ public class NoteMaster : MonoBehaviour
 	public static string noteDataName;//譜面データの名前
 	public static float noteMakeTime = 0;//比較用の開始時刻記録用
 
-	//生成したノーツオブジェクトのリスト
-
 
 	//各画像操作用
 	GameObject resultImageObject, selectImageObject;
@@ -134,6 +132,7 @@ public class NoteMaster : MonoBehaviour
 
 				noteMakeTime = Time.time;
 				Debug.Log("noteMakeTime = " + noteMakeTime);
+
 			}
 		}
 		else if (state == State.afterMakeObj && Time.time >= (noteMakeTime + (60 / (musicData.BPM / 4))))//生成してから1小節分の時間がたったら
@@ -183,6 +182,7 @@ public class NoteMaster : MonoBehaviour
 			MissJudge();
 		}
 	}
+
 
 	public void GoToGame()
 	{

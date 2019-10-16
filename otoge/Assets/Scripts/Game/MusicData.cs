@@ -16,5 +16,7 @@ public class MusicData
 public class ObaMusicData : MusicData
 {
 	public string noteData;//譜面の文字列データ
+	public string assistDataName;
+	public string assistData;
 	public int splitLane;
 }

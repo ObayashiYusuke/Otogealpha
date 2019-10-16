@@ -1,6 +1,6 @@
 bpm=200
-waittime=0.55
-endtime=10
+waittime=0.58
+endtime=120
 musicname=Boss
 buttonnumber=4
 --

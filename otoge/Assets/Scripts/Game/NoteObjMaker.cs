@@ -8,18 +8,33 @@ public class NoteObjMaker : MonoBehaviour
 	public GameObject Pref;
 	public GameObject leftLine;
 	public GameObject rightLine;
+	public GameObject hitLine;
+
+	public Material[] materials;
+
 	private string[] splitText; 
 	private int rowLength;
 	private int rowNum;
 	private float barTime;
 	private List<Note> noteList = new List<Note>();
-	private float width,left,right;
+	private float width,left,right,hitPos;
 	private ObaMusicData obaMusicData = new ObaMusicData();
-	// Start is called before the first frame update
 
+	private bool isAssist;
+	private int noteNum;
+
+	void Start()
+	{
+		left = leftLine.transform.position.z;
+		right = rightLine.transform.position.z;
+		hitPos = hitLine.transform.position.x;
+		width = right - left;
+		Debug.Log("幅は" + width);
+	}
 	public MusicData NoteDataParse(string noteDataName)
 	{
 		string noteData;//譜面データの全文
+
 		float BPM;//取得したBPM
 		float waitTime;
 		float endTime;
@@ -30,7 +45,7 @@ public class NoteObjMaker : MonoBehaviour
 
 		Debug.Log("adress is NoteData/" + noteDataName);
 
-		noteData = (Resources.Load("NoteData/" + noteDataName, typeof(TextAsset)) as TextAsset).text;//テキストの読み込み
+		noteData = (Resources.Load("NoteData/" + noteDataName, typeof(TextAsset)) as TextAsset).text;//譜面データの読み込み
 
 		splitText = noteData.Split(char.Parse("\n"));//テキストを改行ごとに分ける
 		rowLength = noteData.Split('\n').Length;
@@ -51,8 +66,26 @@ public class NoteObjMaker : MonoBehaviour
 		Debug.Log("musicData.endTime=" + obaMusicData.endTime);
 
 		obaMusicData.splitLane = splitLane;
+
+		if (GetAssistDataName(splitText, rowLength) != null)
+		{
+			isAssist = true;
+			obaMusicData.assistDataName = GetAssistDataName(splitText, rowLength);
+			string str = (Resources.Load("AssistData/" + obaMusicData.assistDataName, typeof(TextAsset)) as TextAsset).text;//譜面データの読み込み
+			obaMusicData.assistData = Regex.Replace(str, @"[^0-4]", "");
+			Debug.Log("assistdata = " + obaMusicData.assistData);
+
+		}
+		else
+		{
+			isAssist = false;
+		}
+		noteNum = 0;
+
 		Debug.Log("musicData.buttonNum=" + obaMusicData.splitLane);
 		obaMusicData.noteList = NoteObjMake(obaMusicData);
+
+		
 
 		return obaMusicData;
 	}
@@ -113,6 +146,18 @@ public class NoteObjMaker : MonoBehaviour
 
 	}
 
+	public static string GetAssistDataName(string[] splitText, int rowLength)
+	{
+		int rowNum = SearchWord("assistdata=", splitText, rowLength);
+		if (rowNum == -1)//曲のアシストデータ名を取得 assistdata=ooで記述
+		{
+			return null;
+		}
+		string rmr = Regex.Replace(splitText[rowNum], "\r", "");
+		return Regex.Replace(rmr, "assistdata=", "");//assistDataNameを返す
+
+	}
+
 	public static int GetButtonNumber(string[] splitText, int rowLength)//ボタン数を取得buttonnumber=で記述
 	{
 		int rowNum = SearchWord("buttonnumber=", splitText, rowLength);
@@ -143,13 +188,7 @@ public class NoteObjMaker : MonoBehaviour
 		return rowNum;
 	}
 
-	void Start()
-	{
-		left = leftLine.transform.position.z;
-		right = rightLine.transform.position.z;
-		width = right - left;
-		Debug.Log("幅は" + width);
-	}
+
 	public List<Note> NoteObjMake(ObaMusicData obaMusicData)
 	{
 		splitText = obaMusicData.noteData.Split(char.Parse("\n"));//テキストを改行ごとに分ける
@@ -177,6 +216,8 @@ public class NoteObjMaker : MonoBehaviour
 		NoteMove nm;
 		string lineData;//各行のデータを入れる
 		GameObject obj;
+
+
 
 		if (SearchWord("--") == false)
 		{
@@ -206,8 +247,9 @@ public class NoteObjMaker : MonoBehaviour
 			{
 				if (lineData[l] != '0')
 				{
+					noteNum++;
 					obj = Instantiate(Pref);
-					pos.x = (7 - (skipBar * barTime * NoteMaster.speed) - (i * interval * NoteMaster.speed) - (wait * NoteMaster.speed));
+					pos.x = (hitPos - (skipBar * barTime * NoteMaster.speed) - (i * interval * NoteMaster.speed) - (wait * NoteMaster.speed));
 
 					Debug.Log("pos.x = " + pos.x);
 
@@ -224,6 +266,10 @@ public class NoteObjMaker : MonoBehaviour
 					n.noteType = GetNoteType(l, lineData[l] - '0');
 					n.noteMove = nm;
 					n.justTime = obaMusicData.waitTime + (barNumber * barTime) + (i * interval);
+					if (isAssist)
+					{
+						ChangeColor(noteNum, obj);
+					}
 					noteList.Add(n);
 
 				}
@@ -232,6 +278,14 @@ public class NoteObjMaker : MonoBehaviour
 
 		return true;
 
+	}
+	private void ChangeColor(int noteNum, GameObject changeColorObject)
+	{
+		if (obaMusicData.assistData.Length >= noteNum){ 
+			int colorNum = obaMusicData.assistData[noteNum-1] - '1';
+			if (colorNum == -1) return;
+			changeColorObject.GetComponent<Renderer>().material = materials[colorNum];
+		}
 	}
 	public bool SearchWord(string str)
 	/*文字列を検索し、最初のその文字列が見つかるまでtextNumを進める
