@@ -139,7 +139,8 @@ public class InputPosToNotes : MonoBehaviour
 						NoteMaster.great++;
 						NoteMaster.score += 100;
 						noteMaster.JudgeTextRewrite("GREAT");
-						Destroy(NoteMaster.musicData.noteList[i].gameObject);
+						NoteMaster.musicData.noteList[i].noteMove.StopMove();
+						NoteMaster.musicData.noteList[i].gameObject.GetComponent<NoteFadeOut>().StartFadeOut();
 						NoteMaster.musicData.noteList.RemoveAt(i);
 					}
 					else if (NoteMaster.musicData.noteList[i].justTime + NoteMaster.goodJudge > nowTime && nowTime > NoteMaster.musicData.noteList[i].justTime)
@@ -147,7 +148,8 @@ public class InputPosToNotes : MonoBehaviour
 						NoteMaster.late++;
 						NoteMaster.score += 50;
 						noteMaster.JudgeTextRewrite("LATE");
-						Destroy(NoteMaster.musicData.noteList[i].gameObject);
+						NoteMaster.musicData.noteList[i].noteMove.StopMove();
+						NoteMaster.musicData.noteList[i].gameObject.GetComponent<NoteFadeOut>().StartFadeOut();
 						NoteMaster.musicData.noteList.RemoveAt(i);
 					}
 					else if (NoteMaster.musicData.noteList[i].justTime > nowTime && nowTime > NoteMaster.musicData.noteList[i].justTime - NoteMaster.goodJudge)
@@ -155,7 +157,8 @@ public class InputPosToNotes : MonoBehaviour
 						NoteMaster.fast++;
 						NoteMaster.score += 50;
 						noteMaster.JudgeTextRewrite("FAST");
-						Destroy(NoteMaster.musicData.noteList[i].gameObject);
+						NoteMaster.musicData.noteList[i].noteMove.StopMove();
+						NoteMaster.musicData.noteList[i].gameObject.GetComponent<NoteFadeOut>().StartFadeOut();
 						NoteMaster.musicData.noteList.RemoveAt(i);
 					}
 

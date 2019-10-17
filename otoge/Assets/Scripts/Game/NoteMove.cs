@@ -19,6 +19,10 @@ public class NoteMove : MonoBehaviour
 	{
 		move = true;
 	}
+	public void StopMove()
+	{
+		move = false;
+	}
 	void Start()
 	{
 

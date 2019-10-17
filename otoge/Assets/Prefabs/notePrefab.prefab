@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: -6421227628700716809}
   - component: {fileID: 6147034775865600316}
   - component: {fileID: 1535383251247074395}
+  - component: {fileID: 74884940533322024}
   m_Layer: 0
   m_Name: notePrefab
   m_TagString: Untagged
@@ -123,8 +124,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   noteType: 0
+  justTime: 0
   noteMove: {fileID: 0}
-  time: 0
 --- !u!114 &1535383251247074395
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -137,3 +138,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 25b6bba437c2213439f9e813a67d890e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &74884940533322024
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7674377150795104054}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b28ab6f86179ae4889f9c76edb86b41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fadeOutSpeed: 3
