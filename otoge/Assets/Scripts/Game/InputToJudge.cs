@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class InputPosToNotes : MonoBehaviour
+public class InputToJudge: MonoBehaviour
 {
 	public const int KeyNum = 12;
 
@@ -12,11 +12,11 @@ public class InputPosToNotes : MonoBehaviour
 	public GameObject judgeLine;
 	public GameObject leftLine;
 	public GameObject rightLine;
-	private float left,width;
+	private float left, width;
 	private Vector3 judgeLinePos, judgeLineScale;
 	private float nowTime;
-    void Start()
-    {
+	void Start()
+	{
 		left = leftLine.transform.position.z;
 		width = rightLine.transform.position.z - leftLine.transform.position.z;
 		judgeLinePos = judgeLine.transform.position;
@@ -26,9 +26,9 @@ public class InputPosToNotes : MonoBehaviour
 
 	}
 
-    // Update is called once per frame
-    void Update()
-    {
+	// Update is called once per frame
+	void Update()
+	{
 		if (NoteMaster.state == NoteMaster.State.playing)
 		{
 			nowTime = Time.time - NoteMaster.noteMakeTime - (NoteMaster.realWait - (60 / (NoteMaster.musicData.BPM / 4)));//今の時間を送れた時間分引く
@@ -37,7 +37,7 @@ public class InputPosToNotes : MonoBehaviour
 			TouchInputCheck();
 
 		}
-    }
+	}
 	public void MouseInputCheck()
 	{
 		if (Input.GetMouseButtonDown(0))
@@ -107,9 +107,9 @@ public class InputPosToNotes : MonoBehaviour
 		Touch touchPos2;
 		Vector3 touchPos3;
 		int count = Input.touchCount;
-		if(count > 0)
+		if (count > 0)
 		{
-			for(int i = 0; i < count; i++)
+			for (int i = 0; i < count; i++)
 			{
 				touchPos2 = Input.GetTouch(i);
 				if (touchPos2.phase == TouchPhase.Began)
@@ -121,7 +121,7 @@ public class InputPosToNotes : MonoBehaviour
 					InputJudge(worldPos.z);
 				}
 			}
-			
+
 		}
 	}
 	public void InputJudge(float inputPos)
@@ -171,3 +171,4 @@ public class InputPosToNotes : MonoBehaviour
 		}
 	}
 }
+
