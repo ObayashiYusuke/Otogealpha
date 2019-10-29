@@ -5,9 +5,9 @@ musicname=Boss
 buttonnumber=4
 assistdata=Assist2
 --
-0000
+E
 --
-0000
+E
 --
 0000
 --

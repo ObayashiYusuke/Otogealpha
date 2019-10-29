@@ -9,7 +9,6 @@ public class SelectButton : MonoBehaviour
 
     public void OnClick()
 	{
-		NoteMaster.buttonnumber = 4;
 		NoteMaster.noteDataName = noteDataName;
 		
 		GameObject master = GameObject.Find("noteMaster");

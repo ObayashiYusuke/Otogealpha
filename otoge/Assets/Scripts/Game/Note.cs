@@ -7,6 +7,6 @@ public class Note : MonoBehaviour
 
 	public int noteType;
 	public float justTime;
-
+	public int noteNum;
 	public NoteMove noteMove;
 }

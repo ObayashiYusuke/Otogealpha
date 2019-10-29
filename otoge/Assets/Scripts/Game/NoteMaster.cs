@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Text.RegularExpressions;
 using UnityEngine.SceneManagement;
-
+using System;
 
 public class NoteMaster : MonoBehaviour
 {
@@ -22,8 +22,6 @@ public class NoteMaster : MonoBehaviour
 	public static float speed = 10;
 
 	public GameObject noteMaker;//NoteMakerのオブジェクト
-	[System.NonSerialized] public int inputPushBuffer = 0;//入力を数値化 
-	[System.NonSerialized] public static int buttonnumber = 4;
 
 	public static float greatJudge;
 	public static float goodJudge;
@@ -61,6 +59,8 @@ public class NoteMaster : MonoBehaviour
 	public static string noteDataName;//譜面データの名前
 	public static float noteMakeTime = 0;//比較用の開始時刻記録用
 
+	//リザルト情報
+	public static List<Record> records = new List<Record>();
 
 	//各画像操作用
 	GameObject resultImageObject, selectImageObject;
@@ -154,7 +154,16 @@ public class NoteMaster : MonoBehaviour
 
 			judgeText.enabled = false;
 
-			DestroyList();//リストの消去
+			String ScoreData = "score:" + score + " great:" + great + " fast:" + fast + " late:" + late + " miss:" + miss;
+
+			DateTime dt = DateTime.Now;
+
+			records.Sort((a,b) => a.noteNum - b.noteNum);
+
+			ResultReporter.SaveText(noteDataName+"\n"+ScoreData+"\n"+ RecordsToStr.RecordsToString(records),dt.ToString("MMdd_HHmm")+".txt");
+			DestroyNoteList();//リストの消去
+			records.Clear();//レコードのリセット
+
 		}
 		else if (state == State.result)
 		{
@@ -240,6 +249,8 @@ public class NoteMaster : MonoBehaviour
 		}
 		for(;i>=0;i--)
 		{
+			Note n = musicData.noteList[i];
+			addRecord(n.noteNum, n.justTime, 0f, "miss");
 			Destroy(musicData.noteList[i].gameObject);
 			musicData.noteList.RemoveAt(i);
 			miss++;
@@ -260,7 +271,7 @@ public class NoteMaster : MonoBehaviour
 			achievementRate = score / (great + fast + late + miss);
 		}
 	}
-	void DestroyList()
+	public void DestroyNoteList()
 	{
 		for (int i = 0; i < musicData.noteList.Count; i++)//リストを消去
 		{
@@ -271,7 +282,7 @@ public class NoteMaster : MonoBehaviour
 		}
 		musicData.noteList.Clear();
 	}
-
+	
 
 	private void ButtonControl(bool b)
 	{
@@ -284,6 +295,11 @@ public class NoteMaster : MonoBehaviour
 	public  void JudgeTextRewrite(string str)
 	{
 		judgeText.text = str;
+	}
+
+	public static void addRecord(int noteNum, float justTime,float hitTime,string judgeGrade)
+	{
+		records.Add(new Record(noteNum, justTime, hitTime, judgeGrade));
 	}
 	/*string pushtime;
 	void OnGUI()

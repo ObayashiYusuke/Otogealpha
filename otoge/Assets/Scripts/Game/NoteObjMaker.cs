@@ -245,7 +245,7 @@ public class NoteObjMaker : MonoBehaviour
 			Debug.Log("lineData is" + lineData);
 			for (int l = 0; l < obaMusicData.splitLane; l++)
 			{
-				if (lineData[l] != '0')
+				if (lineData[l] > '0' && lineData[l] <= '0'+ obaMusicData.splitLane)
 				{
 					noteNum++;
 					obj = Instantiate(Pref);
@@ -266,12 +266,16 @@ public class NoteObjMaker : MonoBehaviour
 					n.noteType = GetNoteType(l, lineData[l] - '0');
 					n.noteMove = nm;
 					n.justTime = obaMusicData.waitTime + (barNumber * barTime) + (i * interval);
+					n.noteNum = noteNum;
 					if (isAssist)
 					{
 						ChangeColor(noteNum, obj);
 					}
 					noteList.Add(n);
 
+				}else if(lineData[l] != '0')
+				{
+					break;
 				}
 			}
 		}
