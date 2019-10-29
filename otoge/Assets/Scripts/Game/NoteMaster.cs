@@ -154,7 +154,7 @@ public class NoteMaster : MonoBehaviour
 
 			judgeText.enabled = false;
 
-			String ScoreData = "score:" + score + " great:" + great + " fast:" + fast + " late:" + late + " miss:" + miss;
+			String ScoreData = "score:" + score + " great:" + great + " fast:" + fast + " late:" + late + " miss:" + miss+ " achievementrate:"+achievementRate;
 
 			DateTime dt = DateTime.Now;
 
