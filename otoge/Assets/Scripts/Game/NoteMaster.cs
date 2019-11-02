@@ -68,7 +68,7 @@ public class NoteMaster : MonoBehaviour
 	public static float realWait = 0;
 	[System.NonSerialized]public float nowTime = 0;
 	//ボタン操作用
-	private GameObject basicButton,normalButton, hardButton,veryHardButton,speedUp,speedDown;
+	private GameObject basicButton,normalButton, hardButton,veryHardButton,speedUp,speedDown,color1_1,color2_1,color4_1;
 	
 	public static State state = State.select;//状態を記録 0:曲選択 1:オブジェクト生成前待機 2:オブジェクト生成後待機 3:プレイ中(曲再生後) 4:リザルト 
 
@@ -96,6 +96,9 @@ public class NoteMaster : MonoBehaviour
 		hardButton = GameObject.Find("HardButton");
 		speedUp = GameObject.Find("SpeedUp");
 		speedDown = GameObject.Find("SpeedDown");
+		color1_1 = GameObject.Find("Color1_1");
+		color2_1 = GameObject.Find("Color2_1");
+		color4_1 = GameObject.Find("Color4_1");
 	}
 
 	void Update()
@@ -291,6 +294,9 @@ public class NoteMaster : MonoBehaviour
 		hardButton.SetActive(b);
 		speedUp.SetActive(b);
 		speedDown.SetActive(b);
+		color1_1.SetActive(b);
+		color2_1.SetActive(b);
+		color4_1.SetActive(b);
 	}
 	public  void JudgeTextRewrite(string str)
 	{
