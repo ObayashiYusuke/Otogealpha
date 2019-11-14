@@ -6,6 +6,7 @@ public class NoteFadeOut : MonoBehaviour
 {
 	public float fadeOutSpeed = 2;
 	private bool isFadeOut = false;
+	private bool isFadeOutFinished = false;
 	private bool isDelete = false;
 	private Color color;
 	private float beforeTime;
@@ -20,7 +21,7 @@ public class NoteFadeOut : MonoBehaviour
     void Update()
     {
 
-		if (isDelete)
+		if ((isDelete && this.transform.position.x > 10) || isFadeOutFinished)
 		{
 			Destroy(this.gameObject);
 		}
@@ -30,6 +31,10 @@ public class NoteFadeOut : MonoBehaviour
 	public void StartFadeOut()
 	{
 		isFadeOut = true;
+	}
+	public void DeleteFlagSet()
+	{
+		isDelete = true;
 	}
 	private IEnumerator FadeOut()
 	{
@@ -46,7 +51,7 @@ public class NoteFadeOut : MonoBehaviour
 				//Debug.Log("透明度=" + gameObject.GetComponent<Renderer>().material.color.a);
 				if (color.a <= 0f)
 				{
-					isDelete = true;
+					isFadeOutFinished = true;
 					yield break;
 				}
 			}

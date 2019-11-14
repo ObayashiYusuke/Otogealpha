@@ -1,5 +1,5 @@
 bpm=80
-waittime=0.2
+waittime=0.25
 endtime=92
 musicname=Expect_to_the_future
 buttonnumber=16

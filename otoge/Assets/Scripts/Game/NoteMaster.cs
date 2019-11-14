@@ -68,7 +68,7 @@ public class NoteMaster : MonoBehaviour
 	public static float realWait = 0;
 	[System.NonSerialized]public float nowTime = 0;
 	//ボタン操作用
-	private GameObject basicButton,normalButton, hardButton,veryHardButton,speedUp,speedDown,color1_1,color2_1,color4_1;
+	private GameObject speedUp,speedDown,color1_1,color2_1,color4_1;
 	
 	public static State state = State.select;//状態を記録 0:曲選択 1:オブジェクト生成前待機 2:オブジェクト生成後待機 3:プレイ中(曲再生後) 4:リザルト 
 
@@ -90,10 +90,7 @@ public class NoteMaster : MonoBehaviour
 		timeBar.gameObject.SetActive(false);
 		//Debug.Log("object" + allNoteData[0].ToString());
 		audioSource = gameObject.GetComponent<AudioSource>();
-		basicButton = GameObject.Find("BasicButton");
-		normalButton = GameObject.Find("NormalButton");
-		veryHardButton = GameObject.Find("VeryHardButton");
-		hardButton = GameObject.Find("HardButton");
+		
 		speedUp = GameObject.Find("SpeedUp");
 		speedDown = GameObject.Find("SpeedDown");
 		color1_1 = GameObject.Find("Color1_1");
@@ -254,7 +251,8 @@ public class NoteMaster : MonoBehaviour
 		{
 			Note n = musicData.noteList[i];
 			addRecord(n.noteNum, n.justTime, 0f, "miss");
-			Destroy(musicData.noteList[i].gameObject);
+			//Destroy(musicData.noteList[i].gameObject);
+			n.gameObject.GetComponent<NoteFadeOut>().DeleteFlagSet();
 			musicData.noteList.RemoveAt(i);
 			miss++;
 			judgeText.text = "Miss";
@@ -289,9 +287,7 @@ public class NoteMaster : MonoBehaviour
 
 	private void ButtonControl(bool b)
 	{
-		basicButton.SetActive(b);
-		normalButton.SetActive(b);
-		hardButton.SetActive(b);
+		
 		speedUp.SetActive(b);
 		speedDown.SetActive(b);
 		color1_1.SetActive(b);

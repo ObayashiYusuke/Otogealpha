@@ -7,7 +7,7 @@ public class ScoreText : MonoBehaviour
 {
 	public enum ScoreType
 	{
-		score, great, fast, late, miss
+		score, great, fast, late, miss,none
 	}
 
 	// Start is called before the first frame update
