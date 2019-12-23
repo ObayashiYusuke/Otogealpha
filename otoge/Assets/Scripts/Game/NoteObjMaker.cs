@@ -241,11 +241,11 @@ public class NoteObjMaker : MonoBehaviour
 		for (int i = 0; (startline + 1 + i) < rowNum; i++)
 		{
 			/*Debug.Log("小節の中の" + (i + 1) + "行目");*/
-			lineData = (Regex.Replace(splitText[startline + 1 + i], @"[^0-9A-Z]", ""));
+			lineData = (Regex.Replace(splitText[startline + 1 + i], @"[^0-9A-Za-z]", ""));
 			Debug.Log("lineData is" + lineData);
-			for (int l = 0; l < obaMusicData.splitLane; l++)
+			for (int l = 0; l < lineData.Length; l++)
 			{
-				if (lineData[l] > '0' && lineData[l] <= '0'+ obaMusicData.splitLane)
+				if ((lineData[l] > '0' && lineData[l] <= '0'+ obaMusicData.splitLane )|| (lineData[l] - 'a' >= 0 && lineData[l] - 'a' + '9' + 1 <= '0' + obaMusicData.splitLane))//数字の範囲の場合 || アルファベットの場合||
 				{
 					noteNum++;
 					obj = Instantiate(Pref);
@@ -253,12 +253,14 @@ public class NoteObjMaker : MonoBehaviour
 
 					Debug.Log("pos.x = " + pos.x);
 
-					pos.z = (float)(lineData[l] - '1') / 2 * laneWidth + left +( l + 0.5f)* laneWidth;
+					pos.z = lineData[l] <= '9' ? (float)(lineData[l] - '1') / 2 * laneWidth + left +( l + 0.5f)* laneWidth : (float)(lineData[l] - 'a' + 9) / 2 * laneWidth + left + (l + 0.5f) * laneWidth;//数字:アルファベット
 
 					obj.transform.position = pos;
 
-					size.z = (float)(lineData[l] - '0')*laneWidth - 0.1f;
+					size.z = lineData[l] <= '9'? (lineData[l] - '0')*laneWidth - 0.1f : ((lineData[l] - 'a' + 10) * laneWidth - 0.1f);
 					obj.transform.localScale = size;
+					Debug.Log("objsize = " + size.z);
+
 
 					nm = obj.GetComponent<NoteMove>();
 					nm.SetSpeed(NoteMaster.speed);
@@ -285,6 +287,7 @@ public class NoteObjMaker : MonoBehaviour
 	}
 	private void ChangeColor(int noteNum, GameObject changeColorObject)
 	{
+		if (noteNum == 0) return;
 		if (obaMusicData.assistData.Length >= noteNum){ 
 			int colorNum = obaMusicData.assistData[noteNum-1] - '1';
 			if (colorNum == -1) return;

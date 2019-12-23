@@ -145,6 +145,7 @@ public class InputToJudge: MonoBehaviour
 						n.noteMove.StopMove();
 						n.gameObject.GetComponent<NoteFadeOut>().StartFadeOut();
 						NoteMaster.musicData.noteList.RemoveAt(i);
+						break;
 					}
 					else if (n.justTime + NoteMaster.goodJudge > nowTime && nowTime > n.justTime)
 					{
@@ -155,6 +156,7 @@ public class InputToJudge: MonoBehaviour
 						n.noteMove.StopMove();
 						n.gameObject.GetComponent<NoteFadeOut>().StartFadeOut();
 						NoteMaster.musicData.noteList.RemoveAt(i);
+						break;
 					}
 					else if (n.justTime > nowTime && nowTime > n.justTime - NoteMaster.goodJudge)
 					{
@@ -165,6 +167,7 @@ public class InputToJudge: MonoBehaviour
 						n.noteMove.StopMove();
 						n.gameObject.GetComponent<NoteFadeOut>().StartFadeOut();
 						NoteMaster.musicData.noteList.RemoveAt(i);
+						break;
 					}
 
 				}

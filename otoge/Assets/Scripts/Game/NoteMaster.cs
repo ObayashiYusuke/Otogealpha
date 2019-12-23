@@ -19,7 +19,7 @@ public class NoteMaster : MonoBehaviour
 	[System.NonSerialized] public static int late = 0;
 	[System.NonSerialized] public static int miss = 0;
 	public static float achievementRate;
-	public static float speed = 10;
+	public static float speed = 16;
 
 	public GameObject noteMaker;//NoteMakerのオブジェクト
 
@@ -68,7 +68,7 @@ public class NoteMaster : MonoBehaviour
 	public static float realWait = 0;
 	[System.NonSerialized]public float nowTime = 0;
 	//ボタン操作用
-	private GameObject speedUp,speedDown,color1_1,color2_1,color4_1;
+	private GameObject speedUp,speedDown,color1_1,color2_1,color4_1,rageOut1_1,rageOut2_1;
 	
 	public static State state = State.select;//状態を記録 0:曲選択 1:オブジェクト生成前待機 2:オブジェクト生成後待機 3:プレイ中(曲再生後) 4:リザルト 
 
@@ -76,7 +76,7 @@ public class NoteMaster : MonoBehaviour
 	private void Start()
 	{
 		greatJudge = 0.04f;					//Greatの時間幅
-		goodJudge = 0.1f;					//Goodの時間幅(実際には倍となる)
+		goodJudge = 0.07f;					//Goodの時間幅(実際には倍となる)
 		resultImageObject = GameObject.Find("ResultImage");//結果の画像オブジェクトを取得
 		resultImageObject.SetActive(false);
 
@@ -88,7 +88,8 @@ public class NoteMaster : MonoBehaviour
 
 
 		timeBar.gameObject.SetActive(false);
-		//Debug.Log("object" + allNoteData[0].ToString());
+
+		
 		audioSource = gameObject.GetComponent<AudioSource>();
 		
 		speedUp = GameObject.Find("SpeedUp");
@@ -96,6 +97,8 @@ public class NoteMaster : MonoBehaviour
 		color1_1 = GameObject.Find("Color1_1");
 		color2_1 = GameObject.Find("Color2_1");
 		color4_1 = GameObject.Find("Color4_1");
+		rageOut1_1 = GameObject.Find("RageOut1_1");
+		rageOut2_1 = GameObject.Find("RageOut2_1");
 	}
 
 	void Update()
@@ -293,6 +296,8 @@ public class NoteMaster : MonoBehaviour
 		color1_1.SetActive(b);
 		color2_1.SetActive(b);
 		color4_1.SetActive(b);
+		rageOut1_1.SetActive(b);
+		rageOut2_1.SetActive(b);
 	}
 	public  void JudgeTextRewrite(string str)
 	{
