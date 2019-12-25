@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class InputToJudge: MonoBehaviour
 {
@@ -15,6 +16,7 @@ public class InputToJudge: MonoBehaviour
 	private float left, width;
 	private Vector3 judgeLinePos, judgeLineScale;
 	private float nowTime;
+
 	void Start()
 	{
 		left = leftLine.transform.position.z;
@@ -23,6 +25,7 @@ public class InputToJudge: MonoBehaviour
 		judgeLineScale = judgeLine.transform.localScale;
 		judgeLinePos.z = left;
 		judgeLineScale.z = width;
+
 
 	}
 
@@ -119,6 +122,7 @@ public class InputToJudge: MonoBehaviour
 					touchPos3.z = 0f;
 					worldPos = Camera.main.ScreenToWorldPoint(touchPos3 + Camera.main.transform.forward);
 					InputJudge(worldPos.z);
+
 				}
 			}
 
@@ -126,6 +130,7 @@ public class InputToJudge: MonoBehaviour
 	}
 	public void InputJudge(float inputPos)
 	{
+		
 		for (int i = 0; i < NoteMaster.musicData.noteList.Count; i++)
 		{
 			Note n = NoteMaster.musicData.noteList[i];

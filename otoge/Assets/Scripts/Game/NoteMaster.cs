@@ -69,6 +69,7 @@ public class NoteMaster : MonoBehaviour
 	[System.NonSerialized]public float nowTime = 0;
 	//ボタン操作用
 	private GameObject speedUp,speedDown,color1_1,color2_1,color4_1,rageOut1_1,rageOut2_1;
+
 	
 	public static State state = State.select;//状態を記録 0:曲選択 1:オブジェクト生成前待機 2:オブジェクト生成後待機 3:プレイ中(曲再生後) 4:リザルト 
 
@@ -99,6 +100,7 @@ public class NoteMaster : MonoBehaviour
 		color4_1 = GameObject.Find("Color4_1");
 		rageOut1_1 = GameObject.Find("RageOut1_1");
 		rageOut2_1 = GameObject.Find("RageOut2_1");
+
 	}
 
 	void Update()
@@ -206,7 +208,32 @@ public class NoteMaster : MonoBehaviour
 		timeBar.gameObject.SetActive(true);
 		speedText.enabled = false;
 	}
+	public void GoToTitle()
+	{
+		if (state == State.playing||state == State.afterMakeObj)
+		{
+			audioSource.Stop();//音楽停止
+			judgeText.enabled = false;
+			DestroyNoteList();//リストの消去
+			records.Clear();//レコードのリセット
+		}
+		
+		speedText.enabled = true;
 
+
+		score = 0; great = 0; fast = 0; late = 0; miss = 0;
+
+		resultImageObject.SetActive(false);
+		judgeText.text = "Press Enter\n    To Start!";
+		judgeText.enabled = true;
+
+		selectImageObject.SetActive(true);
+
+		ButtonControl(true);//全てのボタンを表示
+
+		state = State.select;
+
+	}
 	public bool TouchCheck()
 	{
 		if (Input.touchCount > 0)
