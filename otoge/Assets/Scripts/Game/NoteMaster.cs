@@ -61,6 +61,7 @@ public class NoteMaster : MonoBehaviour
 
 	//リザルト情報
 	public static List<Record> records = new List<Record>();
+	public static List<TouchRecord> touchRecords = new List<TouchRecord>();
 
 	//各画像操作用
 	GameObject resultImageObject, selectImageObject;
@@ -165,9 +166,11 @@ public class NoteMaster : MonoBehaviour
 
 			records.Sort((a,b) => a.noteNum - b.noteNum);
 
-			ResultReporter.SaveText(noteDataName+"\n"+ScoreData+"\n"+ RecordsToStr.RecordsToString(records),dt.ToString("MMdd_HHmm")+".txt");
+			ResultReporter.SaveText(noteDataName+"\n"+ScoreData+"\n"+ RecordsToStr.RecordsToString(records),"Record" + dt.ToString("MMdd_HHmm")+".txt");
+			ResultReporter.SaveText(TouchRecordToStr.TouchRecordToString(touchRecords),"Touch" + dt.ToString("MMdd_HHmm") + ".txt");
 			DestroyNoteList();//リストの消去
 			records.Clear();//レコードのリセット
+			touchRecords.Clear();
 
 		}
 		else if (state == State.result)
@@ -216,6 +219,7 @@ public class NoteMaster : MonoBehaviour
 			judgeText.enabled = false;
 			DestroyNoteList();//リストの消去
 			records.Clear();//レコードのリセット
+			touchRecords.Clear();
 		}
 		
 		speedText.enabled = true;
@@ -334,6 +338,10 @@ public class NoteMaster : MonoBehaviour
 	public static void addRecord(int noteNum, float justTime,float hitTime,string judgeGrade)
 	{
 		records.Add(new Record(noteNum, justTime, hitTime, judgeGrade));
+	}
+	public static void addTouchRecord(float posx,float posy,float touchTime)
+	{
+		touchRecords.Add(new TouchRecord(posx,posy,touchTime));
 	}
 	/*string pushtime;
 	void OnGUI()

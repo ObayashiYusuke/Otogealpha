@@ -117,6 +117,7 @@ public class InputToJudge: MonoBehaviour
 				touchPos2 = Input.GetTouch(i);
 				if (touchPos2.phase == TouchPhase.Began)
 				{
+					NoteMaster.addTouchRecord(touchPos2.position.x, touchPos2.position.y, nowTime);
 					touchPos3.x = touchPos2.position.x;
 					touchPos3.y = touchPos2.position.y;
 					touchPos3.z = 0f;
