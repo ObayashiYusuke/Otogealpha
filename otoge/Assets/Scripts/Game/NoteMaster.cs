@@ -228,7 +228,7 @@ public class NoteMaster : MonoBehaviour
 		score = 0; great = 0; fast = 0; late = 0; miss = 0;
 
 		resultImageObject.SetActive(false);
-		judgeText.text = "Press Enter\n    To Start!";
+		judgeText.text = "  Touch\n    To Start!";
 		judgeText.enabled = true;
 
 		selectImageObject.SetActive(true);
