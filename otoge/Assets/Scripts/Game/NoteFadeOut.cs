@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+//各オブジェクトが消えるときの処理を行うクラス GUI上でノーツオブジェクトに付与
 public class NoteFadeOut : MonoBehaviour
 {
 	public float fadeOutSpeed = 2;
@@ -21,18 +21,18 @@ public class NoteFadeOut : MonoBehaviour
     void Update()
     {
 
-		if ((isDelete && this.transform.position.x > 10) || isFadeOutFinished)
+		if ((isDelete && this.transform.position.x > 10) || isFadeOutFinished)//フェードアウトが終わるかオブジェクトが流れ去ったら
 		{
-			Destroy(this.gameObject);
+			Destroy(this.gameObject);//オブジェクトを消す
 		}
 
 	}
 
-	public void StartFadeOut()
+	public void StartFadeOut()//外部からフェードアウトの開始を行う時に呼び出すメソッド
 	{
 		isFadeOut = true;
 	}
-	public void DeleteFlagSet()
+	public void DeleteFlagSet()//外部からオブジェクトの削除を行う時に呼び出すメソッド
 	{
 		isDelete = true;
 	}
@@ -40,18 +40,18 @@ public class NoteFadeOut : MonoBehaviour
 	{
 		while (true)
 		{
-			if (isFadeOut)
+			if (isFadeOut)//フェードアウトを行うかの信号がtrueになったら
 			{
 				beforeTime = Time.time;
 				yield return null;
-				float deltaTime = Time.time - beforeTime;
+				float deltaTime = Time.time - beforeTime;//1フレーム前からの経過時間
 				Debug.Log("deltaTime=" + deltaTime);
-				color.a -= fadeOutSpeed * deltaTime;
+				color.a -= fadeOutSpeed * deltaTime;//経過時間分透明度を下げる
 				gameObject.GetComponent<Renderer>().material.color = color;
 				//Debug.Log("透明度=" + gameObject.GetComponent<Renderer>().material.color.a);
-				if (color.a <= 0f)
+				if (color.a <= 0f)//完全に消えたら
 				{
-					isFadeOutFinished = true;
+					isFadeOutFinished = true;//フェードアウト終了フラグを1に
 					yield break;
 				}
 			}

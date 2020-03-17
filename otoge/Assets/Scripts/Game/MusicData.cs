@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+/*1つの譜面のプレイを行うために必要な情報をひとまとめにしたクラス*/
 public class MusicData
 {
 
@@ -16,7 +16,7 @@ public class MusicData
 public class ObaMusicData : MusicData
 {
 	public string noteData;//譜面の文字列データ
-	public string assistDataName;
-	public string assistData;
-	public int splitLane;
+	public string assistDataName;//カラーガイドのデータのファイル名
+	public string assistData;//カラーガイドデータの本文
+	public int splitLane;//レーン分割数(画面を縦に何分割して使用するか)
 }

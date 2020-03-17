@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-
+/*画面に表示する文字に持たせるクラス　どの画面の時にどの情報を記録するかを入力することで必要な文字列データを設定する*/
 public class ScoreText : MonoBehaviour
 {
 	public enum ScoreType

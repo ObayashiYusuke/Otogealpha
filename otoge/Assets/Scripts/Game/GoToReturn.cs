@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+/*Titleボタンが呼び出す、ゲームの画面をタイトル画面に戻すクラス*/
 public class GoToReturn : MonoBehaviour
 {
 	public void OnClick()
@@ -9,7 +9,7 @@ public class GoToReturn : MonoBehaviour
 
 		GameObject master = GameObject.Find("noteMaster");
 		NoteMaster noteMaster = master.GetComponent<NoteMaster>();
-		noteMaster.GoToTitle();
+		noteMaster.GoToTitle();//noteMaster内のタイトル画面に遷移する処理を呼び出す
 		Debug.Log("GoToTitle Finished");
 	}
 	// Start is called before the first frame update

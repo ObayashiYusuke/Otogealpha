@@ -2,25 +2,25 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Text.RegularExpressions;
-
+/*ノーツオブジェクトを生成するクラス*/
 public class NoteObjMaker : MonoBehaviour
 {
-	public GameObject Pref;
-	public GameObject leftLine;
-	public GameObject rightLine;
-	public GameObject hitLine;
+	public GameObject Pref;//ノーツのプレハブ
+	public GameObject leftLine;//レーンの左端のオブジェクト
+	public GameObject rightLine;//レーンの右端のオブジェクト
+	public GameObject hitLine;//判定ラインのオブジェクト
 
-	public Material[] materials;
+	public Material[] materials;//オブジェクトに貼り付けるマテリアル
 
-	private string[] splitText; 
-	private int rowLength;
-	private int rowNum;
-	private float barTime;
-	private List<Note> noteList = new List<Note>();
-	private float width,left,right,hitPos;
+	private string[] splitText; //　改行で分割して配列に入れる
+	private int rowLength;//行の総数
+	private int rowNum;//現在参照している行の数
+	private float barTime;//1小節の時間
+	private List<Note> noteList = new List<Note>();//生成したノーツのリスト
+	private float width,left,right,hitPos;//オブジェクトの位置や座標を決定するためのレーンの幅、左端、右端、判定ラインの位置
 	private ObaMusicData obaMusicData = new ObaMusicData();
 
-	private bool isAssist;
+	private bool isAssist;//カラーガイドを付加するかどうかのフラグ
 	private int noteNum;
 
 	void Start()
@@ -36,9 +36,9 @@ public class NoteObjMaker : MonoBehaviour
 		string noteData;//譜面データの全文
 
 		float BPM;//取得したBPM
-		float waitTime;
-		float endTime;
-		string musicName;
+		float waitTime;//曲と合わせるために譜面を遅らせる時間
+		float endTime;//プレイ終了までの時間
+		string musicName;//曲データのファイル名
 		string[] splitText;//行ごとに分けた文字列
 		int splitLane;
 		int rowLength;//データ全体の行数
@@ -67,7 +67,7 @@ public class NoteObjMaker : MonoBehaviour
 
 		obaMusicData.splitLane = splitLane;
 
-		if (GetAssistDataName(splitText, rowLength) != null)
+		if (GetAssistDataName(splitText, rowLength) != null)//譜面データにカラーガイドの記載があったら
 		{
 			isAssist = true;
 			obaMusicData.assistDataName = GetAssistDataName(splitText, rowLength);
@@ -189,7 +189,7 @@ public class NoteObjMaker : MonoBehaviour
 	}
 
 
-	public List<Note> NoteObjMake(ObaMusicData obaMusicData)
+	public List<Note> NoteObjMake(ObaMusicData obaMusicData)//実際にオブジェクトを生成する部分
 	{
 		splitText = obaMusicData.noteData.Split(char.Parse("\n"));//テキストを改行ごとに分ける
 		rowLength = obaMusicData.noteData.Split('\n').Length;
@@ -205,7 +205,7 @@ public class NoteObjMaker : MonoBehaviour
 		}
 		return noteList;
 	}
-	public bool MakeOneBar(int skipBar, float wait, int barNumber,ObaMusicData obaMusicData)
+	public bool MakeOneBar(int skipBar, float wait, int barNumber,ObaMusicData obaMusicData)//1小節分のオブジェクトを生成する
 	{
 		Vector3 pos, size;
 		pos.y = 0;
@@ -249,11 +249,11 @@ public class NoteObjMaker : MonoBehaviour
 				{
 					noteNum++;
 					obj = Instantiate(Pref);
-					pos.x = (hitPos - (skipBar * barTime * NoteMaster.speed) - (i * interval * NoteMaster.speed) - (wait * NoteMaster.speed));
+					pos.x = (hitPos - (skipBar * barTime * NoteMaster.speed) - (i * interval * NoteMaster.speed) - (wait * NoteMaster.speed));//判定ラインから操作されるまでの時間(ここまでの小節分の時間+この小節内でどれくらい待つか+waittime分)
 
 					Debug.Log("pos.x = " + pos.x);
 
-					pos.z = lineData[l] <= '9' ? (float)(lineData[l] - '1') / 2 * laneWidth + left +( l + 0.5f)* laneWidth : (float)(lineData[l] - 'a' + 9) / 2 * laneWidth + left + (l + 0.5f) * laneWidth;//数字:アルファベット
+					pos.z = lineData[l] <= '9' ? (float)(lineData[l] - '1') / 2 * laneWidth + left +( l + 0.5f)* laneWidth : (float)(lineData[l] - 'a' + 9) / 2 * laneWidth + left + (l + 0.5f) * laneWidth;//数字:アルファベット 位置とサイズを決定
 
 					obj.transform.position = pos;
 
@@ -285,10 +285,10 @@ public class NoteObjMaker : MonoBehaviour
 		return true;
 
 	}
-	private void ChangeColor(int noteNum, GameObject changeColorObject)
+	private void ChangeColor(int noteNum, GameObject changeColorObject)//オブジェクトのマテリアルを変更するメソッド
 	{
 		if (noteNum == 0) return;
-		if (obaMusicData.assistData.Length >= noteNum){ 
+		if (obaMusicData.assistData.Length >= noteNum){ //アシストデータのそのノーツが何番目かに対応する数字によってマテリアルを変更
 			int colorNum = obaMusicData.assistData[noteNum-1] - '1';
 			if (colorNum == -1) return;
 			changeColorObject.GetComponent<Renderer>().material = materials[colorNum];
@@ -316,7 +316,7 @@ public class NoteObjMaker : MonoBehaviour
 		return true;
 	}
 
-	public int GetNoteType(int left, int size)
+	public int GetNoteType(int left, int size)//どの位置に判定があるかを記録(キーボード用)
 	{
 		int a = 0;
 		for (int i = 1; size >= i; i++)

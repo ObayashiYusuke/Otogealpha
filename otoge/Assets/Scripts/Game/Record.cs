@@ -1,13 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+/*プレイ中のログを取るために、各ノートに対する判定等の記録する情報を1ノート分まとめたクラス*/
 public class Record : MonoBehaviour
 {
-	public int noteNum;
-	public float justTime;
-	public float hitTime;
-	public string judgeGrade;
+	public int noteNum;//そのノートが譜面の中で何番目か
+	public float justTime;//ゲーム開始から操作されるべき時間ちょうどまでの時間
+	public float hitTime;//実際にそのオブジェクトがタッチされた時間
+	public string judgeGrade;//その時の判定
 
 	public Record(int noteNum, float justTime, float hitTime,string judgeGrade)
 	{

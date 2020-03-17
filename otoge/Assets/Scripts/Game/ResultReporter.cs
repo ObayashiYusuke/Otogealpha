@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using System.IO;
-
+/*プレイログを実際に記録するクラス*/
 public class ResultReporter : MonoBehaviour
 {
 
@@ -19,7 +19,7 @@ public class ResultReporter : MonoBehaviour
         
     }
 
-	public static bool SaveText(string text,string fileName)
+	public static bool SaveText(string text,string fileName)//テキストデータを出力するメソッド本文とメソッドを引数に指定
 	{
 		try
 		{

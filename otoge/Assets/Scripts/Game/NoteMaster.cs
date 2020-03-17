@@ -6,6 +6,9 @@ using System.Text.RegularExpressions;
 using UnityEngine.SceneManagement;
 using System;
 
+/*
+ このクラスはゲーム全体の流れや処理を管理するクラス 
+	 */
 public class NoteMaster : MonoBehaviour
 {
 	public enum State
@@ -13,17 +16,17 @@ public class NoteMaster : MonoBehaviour
 		select,beforeMakeObj,afterMakeObj,playing,result
 	}
 
-	[System.NonSerialized]public static int score = 0;
+	[System.NonSerialized]public static int score = 0;//それぞれ得点と判定の数を記録
 	[System.NonSerialized] public static int great = 0;
 	[System.NonSerialized] public static int fast = 0;
 	[System.NonSerialized] public static int late = 0;
 	[System.NonSerialized] public static int miss = 0;
 	public static float achievementRate;
-	public static float speed = 16;
+	public static float speed = 16;//譜面の流れる速度
 
 	public GameObject noteMaker;//NoteMakerのオブジェクト
 
-	public static float greatJudge;
+	public static float greatJudge;//それぞれの判定に含まれる時間を記録する
 	public static float goodJudge;
 
 	//　読む込むテキストが書き込まれている.txtファイル
@@ -57,7 +60,7 @@ public class NoteMaster : MonoBehaviour
 	//譜面情報
 
 	public static string noteDataName;//譜面データの名前
-	public static float noteMakeTime = 0;//比較用の開始時刻記録用
+	public static float noteMakeTime = 0;//ゲームの開始時刻記録
 
 	//リザルト情報
 	public static List<Record> records = new List<Record>();
@@ -125,7 +128,7 @@ public class NoteMaster : MonoBehaviour
 			if (Input.GetKeyDown(KeyCode.Return) || TouchCheck())
 			{
 				state = State.afterMakeObj;
-				score = 0; great = 0; fast = 0; late = 0; miss = 0;
+				score = 0; great = 0; fast = 0; late = 0; miss = 0;//評価数のリセット
 
 				judgeText.text = "";
 
@@ -136,7 +139,7 @@ public class NoteMaster : MonoBehaviour
 				Debug.Log("adress is MusicData/" + musicData.musicName);
 				Debug.Log(Resources.Load("MusicData/" + musicData.musicName, typeof(AudioClip)));
 
-				noteMakeTime = Time.time;
+				noteMakeTime = Time.time;//現在の時間を譜面が流れ出す時間に設定
 				Debug.Log("noteMakeTime = " + noteMakeTime);
 
 			}
@@ -175,13 +178,13 @@ public class NoteMaster : MonoBehaviour
 		}
 		else if (state == State.result)
 		{
-			if (Input.GetKeyDown(KeyCode.Return) || TouchCheck())
+			if (Input.GetKeyDown(KeyCode.Return) || TouchCheck())//リザルト画面で画面がタッチされたら
 			{
 				state = State.select;
 				speedText.enabled = true;
 
 
-				score = 0; great = 0; fast = 0; late = 0; miss = 0;
+				score = 0; great = 0; fast = 0; late = 0; miss = 0;//評価数のリセット
 
 				resultImageObject.SetActive(false);
 				judgeText.text = "Press Enter\n    To Start!";
@@ -201,7 +204,7 @@ public class NoteMaster : MonoBehaviour
 	}
 
 
-	public void GoToGame()
+	public void GoToGame()//ゲーム開始時の処理　セレクト画面のボタンが押されると呼び出される
 	{
 		Debug.Log("GoToGame");
 		state = State.beforeMakeObj;
@@ -211,7 +214,7 @@ public class NoteMaster : MonoBehaviour
 		timeBar.gameObject.SetActive(true);
 		speedText.enabled = false;
 	}
-	public void GoToTitle()
+	public void GoToTitle()//タイトルボタンが押されると呼び出される
 	{
 		if (state == State.playing||state == State.afterMakeObj)
 		{
@@ -238,7 +241,7 @@ public class NoteMaster : MonoBehaviour
 		state = State.select;
 
 	}
-	public bool TouchCheck()
+	public bool TouchCheck()//画面がタッチされたらtrue、それ以外ならfalse
 	{
 		if (Input.touchCount > 0)
 		{
@@ -258,7 +261,7 @@ public class NoteMaster : MonoBehaviour
 		}
 	}
 
-	public void MusicPlay()
+	public void MusicPlay()//音楽を再生
 	{
 		Debug.Log("real bar time = " + (Time.time - noteMakeTime).ToString());
 		realWait = Time.time - noteMakeTime;
@@ -271,17 +274,17 @@ public class NoteMaster : MonoBehaviour
 
 
 
-	public void MissJudge()
+	public void MissJudge()//ノーツのミスを判定(別クラスにすべきでした)
 	{
 		int i;
-		for(i = musicData.noteList.Count - 1;i >= 0; i--)
+		for(i = musicData.noteList.Count - 1;i >= 0; i--)//goodの判定を過ぎた分iが減る
 		{
 			if(musicData.noteList[i].justTime + goodJudge + noteMakeTime + (realWait - (60 / (musicData.BPM / 4))) < Time.time)
 			{
 				break;
 			}
 		}
-		for(;i>=0;i--)
+		for(;i>=0;i--)//good判定から漏れたものにすべてMissの処理を行う
 		{
 			Note n = musicData.noteList[i];
 			addRecord(n.noteNum, n.justTime, 0f, "miss");
@@ -295,7 +298,7 @@ public class NoteMaster : MonoBehaviour
 	
 
 	
-	void CalcAchievementRate()
+	void CalcAchievementRate()//得点が最高値の何パーセント取れたか計算
 	{
 		if ((great + fast + late + miss) == 0)
 		{
@@ -306,7 +309,7 @@ public class NoteMaster : MonoBehaviour
 			achievementRate = score / (great + fast + late + miss);
 		}
 	}
-	public void DestroyNoteList()
+	public void DestroyNoteList()//ノーツリストの内容をリセット
 	{
 		for (int i = 0; i < musicData.noteList.Count; i++)//リストを消去
 		{
@@ -319,7 +322,7 @@ public class NoteMaster : MonoBehaviour
 	}
 	
 
-	private void ButtonControl(bool b)
+	private void ButtonControl(bool b)//ボタンの表示非表示を管理
 	{
 		
 		speedUp.SetActive(b);
@@ -330,16 +333,16 @@ public class NoteMaster : MonoBehaviour
 		rageOut1_1.SetActive(b);
 		rageOut2_1.SetActive(b);
 	}
-	public  void JudgeTextRewrite(string str)
+	public  void JudgeTextRewrite(string str)//判定の文字を変更
 	{
 		judgeText.text = str;
 	}
 
-	public static void addRecord(int noteNum, float justTime,float hitTime,string judgeGrade)
+	public static void addRecord(int noteNum, float justTime,float hitTime,string judgeGrade)//プレイログを記録するときの情報を1行リストに追加
 	{
 		records.Add(new Record(noteNum, justTime, hitTime, judgeGrade));
 	}
-	public static void addTouchRecord(float posx,float posy,float touchTime)
+	public static void addTouchRecord(float posx,float posy,float touchTime)//入力ログを記録するときの情報を1行リストに追加
 	{
 		touchRecords.Add(new TouchRecord(posx,posy,touchTime));
 	}

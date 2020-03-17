@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+/*TouchRecordリストから実際に記録する文字列データに変換するクラス*/
 public class TouchRecordToStr : MonoBehaviour
 {
     // Start is called before the first frame update
